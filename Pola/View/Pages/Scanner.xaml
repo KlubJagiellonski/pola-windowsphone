@@ -6,11 +6,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
+    NavigationCacheMode="Required">
 
-    <Grid>
-        <CaptureElement Name="Preview" Stretch="None"/>
-        <Polyline Name="BarcodeOutline" Stroke="Red" StrokeThickness="3"/>
+    <Grid >
+        <CaptureElement Name="Preview" 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Stretch="UniformToFill"/>
         <TextBlock Name="TextLog" VerticalAlignment="Bottom" FontSize="24"/>
     </Grid>
 </Page>

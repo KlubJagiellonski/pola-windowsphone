@@ -36,7 +36,6 @@ namespace Pola
         {
             var autoFocus = new ContinuousAutoFocus(control);
 
-#if WINDOWS_PHONE_APP
             AutoFocusRange range;
             if (control.SupportedFocusRanges.Contains(AutoFocusRange.FullRange))
             {
@@ -94,12 +93,6 @@ namespace Pola
 
                 var ignore = Task.Run(async () => { await autoFocus.DriveAutoFocusAsync(); });
             }
-#else
-            if (control.SupportedPresets.Contains(FocusPreset.Auto))
-            {
-                await control.SetPresetAsync(FocusPreset.Auto, /*completeBeforeFocus*/true);
-            }
-#endif
 
             return autoFocus;
         }

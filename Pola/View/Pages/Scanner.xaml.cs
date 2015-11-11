@@ -34,11 +34,11 @@ namespace Pola.View.Pages
     {
         private NavigationHelper navigationHelper;
 
-        DisplayRequest m_displayRequest = new DisplayRequest();
+        DisplayRequest displayRequest = new DisplayRequest();
         MediaCapture m_capture;
         ContinuousAutoFocus m_autoFocus;
         bool m_initializing;
-        SystemMediaTransportControls m_mediaControls;
+
         BarcodeReader m_reader = new BarcodeReader
         {
             Options = new DecodingOptions
@@ -54,7 +54,6 @@ namespace Pola.View.Pages
         {
             this.InitializeComponent();
             this.navigationHelper = new NavigationHelper(this);
-            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         public NavigationHelper NavigationHelper
@@ -71,14 +70,11 @@ namespace Pola.View.Pages
         {
             this.navigationHelper.OnNavigatedTo(e);
 
-            // Disable app UI rotation
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;
-
             // Prevent screen timeout
-            m_displayRequest.RequestActive();
+            displayRequest.RequestActive();
 
-            Application.Current.Resuming += App_Resuming;
-            Application.Current.Suspending += App_Suspending;
+            Application.Current.Resuming += OnResuming;
+            Application.Current.Suspending += OnSuspending;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
             var ignore = InitializeCaptureAsync();
         }
@@ -87,18 +83,16 @@ namespace Pola.View.Pages
         {
             this.navigationHelper.OnNavigatedFrom(e);
 
-            Application.Current.Resuming -= App_Resuming;
-            Application.Current.Suspending -= App_Suspending;
+            Application.Current.Resuming -= OnResuming;
+            Application.Current.Suspending -= OnSuspending;
             Window.Current.VisibilityChanged -= Current_VisibilityChanged;
 
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
-
-            m_displayRequest.RequestRelease();
+            displayRequest.RequestRelease();
 
             await DisposeCaptureAsync();
         }
 
-        private void App_Resuming(object sender, object e)
+        private void OnResuming(object sender, object e)
         {
             // Dispatch call to the UI thread since the event may get fired on some other thread
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
@@ -107,7 +101,7 @@ namespace Pola.View.Pages
             });
         }
 
-        private void App_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+        private void OnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
         {
             // Dispatch call to the UI thread since the event may get fired on some other thread
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
@@ -155,26 +149,30 @@ namespace Pola.View.Pages
 
                 var capture = new MediaCapture();
                 await capture.InitializeAsync(settings);
+                capture.SetPreviewRotation(VideoRotation.Clockwise90Degrees);
 
                 // Select the capture resolution closest to screen resolution
                 var formats = capture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview);
                 var format = (VideoEncodingProperties)formats.OrderBy((item) =>
                 {
                     var props = (VideoEncodingProperties)item;
-                    return Math.Abs(props.Width - this.ActualWidth) + Math.Abs(props.Height - this.ActualHeight);
+                    return Math.Abs(props.Width - this.ActualHeight) + Math.Abs(props.Height - this.ActualWidth);
                 }).First();
+
+                Debug.WriteLine("{0} x {1}", format.Width, format.Height);
+                
                 await capture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
 
                 // Make the preview full screen
-                var scale = Math.Min(this.ActualWidth / format.Width, this.ActualHeight / format.Height);
-                Preview.Width = format.Width;
-                Preview.Height = format.Height;
-                Preview.RenderTransformOrigin = new Point(.5, .5);
-                Preview.RenderTransform = new ScaleTransform { ScaleX = scale, ScaleY = scale };
-                BarcodeOutline.Width = format.Width;
-                BarcodeOutline.Height = format.Height;
-                BarcodeOutline.RenderTransformOrigin = new Point(.5, .5);
-                BarcodeOutline.RenderTransform = new ScaleTransform { ScaleX = scale, ScaleY = scale };
+                var scale = Math.Min(this.ActualWidth / format.Height, this.ActualHeight / format.Width);
+                Preview.Width = format.Height;
+                Preview.Height = format.Width;
+                Preview.RenderTransformOrigin = new Point(0.5, 0.5);
+                Preview.RenderTransform = new ScaleTransform
+                {
+                    ScaleX = scale,
+                    ScaleY = scale,
+                };
 
                 // Enable QR code detection
                 var definition = new LumiaAnalyzerDefinition(ColorMode.Yuv420Sp, 640, AnalyzeBitmap);
@@ -235,7 +233,6 @@ namespace Pola.View.Pages
                         m_autoFocus.BarcodeFound = false;
                     }
 
-                    BarcodeOutline.Points.Clear();
                 }
                 else
                 {
@@ -244,16 +241,6 @@ namespace Pola.View.Pages
                     if (m_autoFocus != null)
                     {
                         m_autoFocus.BarcodeFound = true;
-                    }
-
-                    BarcodeOutline.Points.Clear();
-
-                    for (int n = 0; n < result.ResultPoints.Length; n++)
-                    {
-                        BarcodeOutline.Points.Add(new Point(
-                            result.ResultPoints[n].X * (BarcodeOutline.Width / bitmap.Dimensions.Width),
-                            result.ResultPoints[n].Y * (BarcodeOutline.Height / bitmap.Dimensions.Height)
-                            ));
                     }
                 }
             });
