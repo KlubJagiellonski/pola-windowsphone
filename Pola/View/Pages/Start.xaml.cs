@@ -1,19 +1,11 @@
-﻿using Pola.Common;
+﻿using Newtonsoft.Json;
+using Pola.Common;
+using Pola.Model.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Display;
-using Windows.UI.ViewManagement;
+using System.Net;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
@@ -113,9 +105,33 @@ namespace Pola.View.Pages
             Frame.Navigate(typeof(Scanner));
         }
 
-        private void OnTestApiClick(object sender, RoutedEventArgs e)
+        private async void OnTestApiClick(object sender, RoutedEventArgs e)
         {
+            Button apiButton = (Button)sender;
+            apiButton.IsEnabled = false;
 
+            long productId = 0;
+
+            productId = 5903548005092;
+            productId = 8005510001549;
+            productId = 5905279156029;
+
+            WebRequest productRequest = WebRequest.Create(string.Format("https://pola-staging.herokuapp.com/a/get_by_code/{0}?device_id=test", productId));
+
+            using (WebResponse productResponse = await productRequest.GetResponseAsync())
+            using (StreamReader productReader = new StreamReader(productResponse.GetResponseStream()))
+            {
+                Product product = JsonConvert.DeserializeObject<Product>(productReader.ReadToEnd());
+
+                string resultText = string.Empty;
+                resultText += string.Format("Id = {0}\r\n", product.Id);
+                if (!string.IsNullOrEmpty(product.Company.Name))
+                    resultText += string.Format("Company = {0}", product.Company.Name);
+                ResultTextBlock.Text = resultText;
+
+            }
+
+            apiButton.IsEnabled = true;
         }
     }
 }

@@ -152,6 +152,9 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="View\Controls\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

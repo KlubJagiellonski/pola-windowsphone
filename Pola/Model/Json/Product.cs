@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pola.Model.Json
 {
@@ -19,7 +14,7 @@ namespace Pola.Model.Json
         public bool IsVerified { get; set; }
 
         [JsonProperty("plScore")]
-        public int PlScore { get; set; }
+        public int? PlScore { get; set; }
 
         [JsonProperty("report")]
         public object ReportObject { get; set; }

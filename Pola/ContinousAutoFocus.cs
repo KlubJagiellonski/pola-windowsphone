@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Media.Devices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Linq;
-using System.Diagnostics;
 
 namespace Pola
 {

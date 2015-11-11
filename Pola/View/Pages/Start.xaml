@@ -27,11 +27,17 @@
             <TextBlock Text="tester" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
-        <!--TODO: Content should be placed within the following grid-->
-        <StackPanel Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <Button Content="test api" Click="OnTestApiClick"/>
-            <Button Content="scanner" Click="OnScannerClick"/>
-            <TextBlock Text="Result" TextWrapping="Wrap" />
+        <!-- Content -->
+        <StackPanel Grid.Row="1" 
+                    x:Name="ContentRoot" 
+                    Margin="19,9.5,19,0">
+            <Button Content="api" 
+                    Click="OnTestApiClick"/>
+            <Button Content="scanner" 
+                    Click="OnScannerClick"/>
+            <TextBlock x:Name="ResultTextBlock" 
+                       Text="Result" 
+                       TextWrapping="Wrap" />
         </StackPanel>
     </Grid>
 </Page>
