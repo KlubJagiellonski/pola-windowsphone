@@ -7,13 +7,31 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
-    NavigationCacheMode="Required">
+    NavigationCacheMode="Required" SizeChanged="Page_SizeChanged">
 
-    <Grid >
+    <Grid>
         <CaptureElement Name="Preview" 
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Stretch="UniformToFill"/>
+        <Canvas x:Name="Overlay" 
+                Width="400"
+                Height="640">
+            <Path Fill="#40000000">
+                <Path.Data>
+                    <GeometryGroup>
+                        <RectangleGeometry Rect="0 0 400 640" />
+                        <RectangleGeometry Rect="60 200 280 140" />
+                    </GeometryGroup>
+                </Path.Data>
+            </Path>
+            <Path Stroke="#80FFFFFF"
+                  StrokeThickness="1">
+                <Path.Data>
+                    <RectangleGeometry Rect="60 200 280 140" />
+                </Path.Data>
+            </Path>
+        </Canvas>
         <TextBlock Name="TextLog" VerticalAlignment="Bottom" FontSize="24"/>
     </Grid>
 </Page>

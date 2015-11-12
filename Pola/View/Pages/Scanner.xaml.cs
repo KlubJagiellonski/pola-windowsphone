@@ -76,7 +76,21 @@ namespace Pola.View.Pages
             Application.Current.Resuming += OnResuming;
             Application.Current.Suspending += OnSuspending;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
+
             var ignore = InitializeCaptureAsync();
+        }
+
+        private void UpdateOverlaySize()
+        {
+            double scaleX = this.ActualWidth / Overlay.ActualWidth;
+            double scaleY = this.ActualHeight / Overlay.ActualHeight;
+
+            Overlay.RenderTransformOrigin = new Point(0.5, 0.5);
+            Overlay.RenderTransform = new ScaleTransform()
+            {
+                ScaleX = scaleX,
+                ScaleY = scaleY,
+            };
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
@@ -291,6 +305,11 @@ namespace Pola.View.Pages
 
                 capture.Dispose();
             }
+        }
+
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateOverlaySize();
         }
     }
 }
