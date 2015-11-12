@@ -89,15 +89,16 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="ContinousAutoFocus.cs" />
+    <Compile Include="View\ContinousAutoFocus.cs" />
     <Compile Include="Model\Json\Company.cs" />
     <Compile Include="Model\Json\Product.cs" />
     <Compile Include="Model\Json\Report.cs" />
+    <Compile Include="Model\PolaClient.cs" />
     <Compile Include="View\Pages\Scanner.xaml.cs">
       <DependentUpon>Scanner.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QrCodeDetectorEventSource.cs" />
+    <Compile Include="View\QrCodeDetectorEventSource.cs" />
     <Compile Include="View\Pages\Start.xaml.cs">
       <DependentUpon>Start.xaml</DependentUpon>
     </Compile>

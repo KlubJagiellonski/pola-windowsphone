@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Tracing;
 
-namespace Pola
+namespace Pola.View
 {
     [EventSource(Name = "MMaitre-QrCodeDetector")]
     sealed class Log : EventSource

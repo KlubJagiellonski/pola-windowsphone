@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Pola.Common;
+using Pola.Model;
 using Pola.Model.Json;
 using System;
 using System.IO;
@@ -116,19 +117,19 @@ namespace Pola.View.Pages
             productId = 8005510001549;
             productId = 5905279156029;
 
-            WebRequest productRequest = WebRequest.Create(string.Format("https://pola-staging.herokuapp.com/a/get_by_code/{0}?device_id=test", productId));
+            Product product = await PolaClient.FindProduct(productId);
 
-            using (WebResponse productResponse = await productRequest.GetResponseAsync())
-            using (StreamReader productReader = new StreamReader(productResponse.GetResponseStream()))
+            if (product != null)
             {
-                Product product = JsonConvert.DeserializeObject<Product>(productReader.ReadToEnd());
-
                 string resultText = string.Empty;
                 resultText += string.Format("Id = {0}\r\n", product.Id);
-                if (!string.IsNullOrEmpty(product.Company.Name))
+                if (product.Company != null && !string.IsNullOrEmpty(product.Company.Name))
                     resultText += string.Format("Company = {0}", product.Company.Name);
                 ResultTextBlock.Text = resultText;
-
+            }
+            else
+            {
+                ResultTextBlock.Text = "Nie znaleziono";
             }
 
             apiButton.IsEnabled = true;
