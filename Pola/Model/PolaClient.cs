@@ -17,6 +17,11 @@ namespace Pola.Model
 
         public static async Task<Product> FindProduct(long code)
         {
+            return await FindProduct(code.ToString());
+        }
+
+        public static async Task<Product> FindProduct(string code)
+        {
             WebRequest productRequest = WebRequest.Create(string.Format("{0}/a/get_by_code/{1}?device_id={2}", BaseUrl, code, DeviceId));
             using (WebResponse productResponse = await productRequest.GetResponseAsync())
             using (StreamReader productReader = new StreamReader(productResponse.GetResponseStream()))

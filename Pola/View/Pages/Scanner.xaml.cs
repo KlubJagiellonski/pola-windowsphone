@@ -1,5 +1,7 @@
 ﻿using Lumia.Imaging;
 using Pola.Common;
+using Pola.Model;
+using Pola.Model.Json;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -16,6 +18,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System.Display;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -38,6 +41,7 @@ namespace Pola.View.Pages
         MediaCapture m_capture;
         ContinuousAutoFocus m_autoFocus;
         bool m_initializing;
+        string code = null;
 
         BarcodeReader m_reader = new BarcodeReader
         {
@@ -53,7 +57,20 @@ namespace Pola.View.Pages
         public Scanner()
         {
             this.InitializeComponent();
+            this.SetupApplicatoinBar();
+            this.SetupStatusBar();
             this.navigationHelper = new NavigationHelper(this);
+        }
+
+        public void SetupApplicatoinBar()
+        {
+            this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+        }
+
+        public void SetupStatusBar()
+        {
+            StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+            statusBar.BackgroundOpacity = 0.6;
         }
 
         public NavigationHelper NavigationHelper
@@ -205,14 +222,17 @@ namespace Pola.View.Pages
             }
             catch (Exception e)
             {
-                TextLog.Text = String.Format("Failed to start the camera: {0}", e.Message);
+                //TextLog.Text = String.Format("Failed to start the camera: {0}", e.Message);
             }
 
             m_initializing = false;
         }
 
-        private void AnalyzeBitmap(Bitmap bitmap, TimeSpan time)
+        private async void AnalyzeBitmap(Bitmap bitmap, TimeSpan time)
         {
+            if (code != null)
+                return;
+
             if (m_snapRequested)
             {
                 m_snapRequested = false;
@@ -233,6 +253,19 @@ namespace Pola.View.Pages
 
             Log.Events.QrCodeDecodeStop(result != null);
 
+            if (result != null)
+            {
+                code = result.Text;
+                Product product = await PolaClient.FindProduct(code);
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (product != null && product.Company != null && product.Company.Name != null)
+                        {
+                            ProductItem.Text = product.Company.Name;
+                        }
+                    });
+            }
+
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 var elapsedTimeInMS = m_time.ElapsedMilliseconds;
@@ -240,7 +273,7 @@ namespace Pola.View.Pages
 
                 if (result == null)
                 {
-                    TextLog.Text = String.Format("[{0,4}ms] No barcode", elapsedTimeInMS);
+                    //TextLog.Text = String.Format("[{0,4}ms] No barcode", elapsedTimeInMS);
 
                     if (m_autoFocus != null)
                     {
@@ -250,7 +283,8 @@ namespace Pola.View.Pages
                 }
                 else
                 {
-                    TextLog.Text = String.Format("[{0,4}ms] {1}", elapsedTimeInMS, result.Text);
+                    
+                    //TextLog.Text = String.Format("[{0,4}ms] {1}", elapsedTimeInMS, result.Text);
 
                     if (m_autoFocus != null)
                     {
@@ -310,6 +344,21 @@ namespace Pola.View.Pages
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdateOverlaySize();
+        }
+
+        private void OnRateClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnFeedbackClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnAboutClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(About));
         }
     }
 }

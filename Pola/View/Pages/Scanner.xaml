@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
-    NavigationCacheMode="Required" SizeChanged="Page_SizeChanged">
+    NavigationCacheMode="Required" 
+    SizeChanged="Page_SizeChanged">
 
-    <Grid>
+    <Grid Margin="0, -26.6667">
         <CaptureElement Name="Preview" 
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -32,6 +33,30 @@
                 </Path.Data>
             </Path>
         </Canvas>
-        <TextBlock Name="TextLog" VerticalAlignment="Bottom" FontSize="24"/>
+        <StackPanel Margin="0, 26.6667"
+                    VerticalAlignment="Bottom">
+            <Grid Margin="19, 9.5" Background="White"
+                  Height="38">
+                <TextBlock x:Name="ProductItem"
+                           VerticalAlignment="Center"
+                           Margin="9.5, 0"
+                           Foreground="Black" 
+                           Style="{StaticResource ControlHeaderTextBlockStyle}"/>
+            </Grid>
+        </StackPanel>
     </Grid>
+    <Page.BottomAppBar>
+        <CommandBar Foreground="White"
+                    Background="Black"
+                    Opacity="0.6">
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="RateButton" 
+                              Label="rate and review" Click="OnRateClick"/>
+                <AppBarButton x:Name="FeedbackButton" 
+                              Label="send feedback" Click="OnFeedbackClick" />
+                <AppBarButton x:Name="AboutButton" 
+                              Label="about" Click="OnAboutClick" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

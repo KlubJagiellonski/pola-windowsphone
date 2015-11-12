@@ -94,6 +94,9 @@
     <Compile Include="Model\Json\Product.cs" />
     <Compile Include="Model\Json\Report.cs" />
     <Compile Include="Model\PolaClient.cs" />
+    <Compile Include="View\Pages\About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Pages\Scanner.xaml.cs">
       <DependentUpon>Scanner.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\Pages\About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Pages\Scanner.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
