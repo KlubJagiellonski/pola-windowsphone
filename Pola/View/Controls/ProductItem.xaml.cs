@@ -20,9 +20,18 @@ namespace Pola.View.Controls
 {
     public sealed partial class ProductItem : UserControl
     {
-        public const double CollapsedHeight = 48;
-        public const double MinimizedHeight = 30;
+        #region Constants
+
+        public const double DefaultHeight = 48;
         public const double Space = 9.5;
+
+        #endregion
+
+        #region Fields
+
+        private double targetY;
+
+        #endregion
 
         #region Events
 
@@ -73,44 +82,45 @@ namespace Pola.View.Controls
 
         #endregion
 
+        #region Constructor
+
         public ProductItem()
         {
             this.InitializeComponent();
             this.SetupProjection();
         }
 
+        #endregion
+
+        #region Event handlers
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            ShowUpStoryboard.Begin();
+        }
+
+        private void OnHideStoryboardCompleted(object sender, object e)
+        {
+            OnHidden();
+        }
+
+        #endregion
+
+        #region Methods
+
         private void SetupProjection()
         {
             ((PlaneProjection)RootGrid.Projection).RotationX = -89.9999;
         }
 
-        public void Expand()
-        {
-            Point position = this.TransformToVisual(this.GetPage()).TransformPoint(new Point());
-            this.RenderTransform = new TranslateTransform()
-            {
-                Y = -position.Y
-            };
-        }
-
-        public void Collapse()
-        {
-
-        }
-
-        public void Minimize()
-        {
-
-        }
-
         public void SlideDown()
         {
-            Slide(CollapsedHeight + Space);
+            Slide(DefaultHeight + Space);
         }
 
         public void SlideUp(int count = 1)
         {
-            Slide(-(CollapsedHeight + Space) * count);
+            Slide(-(DefaultHeight + Space) * count);
         }
 
         private void Slide(double offset)
@@ -137,14 +147,6 @@ namespace Pola.View.Controls
             HideStoryboard.Begin();
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            ShowUpStoryboard.Begin();
-        }
-
-        private void OnHideStoryboardCompleted(object sender, object e)
-        {
-            OnHidden();
-        }
+        #endregion
     }
 }

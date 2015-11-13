@@ -15,7 +15,9 @@ using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
+using Windows.Phone.UI.Input;
 using Windows.System.Display;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -70,8 +72,8 @@ namespace Pola.View.Pages
         {
             this.InitializeComponent();
             this.SetupApplicatoinBar();
-            this.SetupStatusBar();
             this.navigationHelper = new NavigationHelper(this);
+            HardwareButtons.BackPressed += OnBackPressed;
         }
 
         #endregion
@@ -86,6 +88,7 @@ namespace Pola.View.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            this.SetupStatusBar();
 
             // Prevent screen timeout
             displayRequest.RequestActive();
@@ -108,6 +111,15 @@ namespace Pola.View.Pages
             displayRequest.RequestRelease();
 
             await DisposeCaptureAsync();
+        }
+
+        private void OnBackPressed(object sender, BackPressedEventArgs e)
+        {
+            if (ProductDetailsPanel.IsOpen)
+            {
+                e.Handled = true;
+                ProductDetailsPanel.Close();
+            }
         }
 
         private void OnResuming(object sender, object e)
@@ -162,6 +174,16 @@ namespace Pola.View.Pages
             Frame.Navigate(typeof(About));
         }
 
+        private void OnAddItemClick(object sender, RoutedEventArgs e)
+        {
+            ProductsListBox.AddProduct(string.Empty);
+        }
+
+        private void OnProductSelected(object sender, ProductEventArgs e)
+        {
+            ProductDetailsPanel.Open();
+        }
+
         #endregion
 
         #region Methods
@@ -171,10 +193,14 @@ namespace Pola.View.Pages
             this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
         }
 
+        /// <summary>
+        /// Setups StatusBar opacity and colors.
+        /// </summary>
         public void SetupStatusBar()
         {
             StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-            statusBar.BackgroundOpacity = 0.6;
+            statusBar.BackgroundOpacity = 0;
+            statusBar.ForegroundColor = Colors.White;
         }
 
         /// <summary>
@@ -371,16 +397,5 @@ namespace Pola.View.Pages
         }
 
         #endregion
-
-        private void CompanyItem_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-            ProductItem panel = (ProductItem)sender;
-            panel.Expand();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ProductsListBox.AddProduct(string.Empty);
-        }
     }
 }

@@ -35,11 +35,14 @@
             </Path>
         </Canvas>
         <controls:ProductsListBox x:Name="ProductsListBox" 
-                                  Margin="0, 26.6667"/>
+                                  Margin="0, 26.6667" 
+                                  ProductSelected="OnProductSelected"/>
         <Button Content="add product item" 
                 VerticalAlignment="Top"
                 HorizontalAlignment="Left"
-                Margin="19, 32" Click="Button_Click"/>
+                Margin="19, 32" Click="OnAddItemClick"/>
+        <controls:ProductDetailsPanel x:Name="ProductDetailsPanel"
+                                      IsOpen="False"/>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar Foreground="White"

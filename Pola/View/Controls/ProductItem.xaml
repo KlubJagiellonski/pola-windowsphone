@@ -32,27 +32,32 @@
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
+        <Storyboard x:Name="HeightStoryboard">
+            <DoubleAnimation Storyboard.TargetName="RootGrid"
+                             Storyboard.TargetProperty="Height"
+                             To="32" />
+        </Storyboard>
     </UserControl.Resources>
 
     <ListViewItem HorizontalContentAlignment="Stretch"
                   VerticalContentAlignment="Stretch">
         <Grid x:Name="RootGrid" 
-          Margin="19, 0, 19, 9.5" 
-          Background="White"
-          Height="48">
+              Margin="19, 0, 19, 9.5" 
+              Background="White"
+              Height="48">
             <Grid.Projection>
                 <PlaneProjection/>
             </Grid.Projection>
-            <TextBlock x:Name="TitleTextBlock"
-                   Text="Nazwa producenta"
-                   VerticalAlignment="Top"
-                   Margin="9.5, 4.75"
-                   Foreground="Black" 
-                   FontFamily="Segoe WP Semilight"
-                   FontSize="24"/>
-            <Rectangle Fill="#d8152f" 
-                           Height="4.75"
-                           VerticalAlignment="Bottom"/>
+            <StackPanel>
+                <TextBlock x:Name="TitleTextBlock"
+                           Text="Nazwa producenta"
+                           Margin="9.5, 4.75"
+                           Foreground="Black" 
+                           FontFamily="Segoe WP Semilight"
+                           FontSize="24"/>
+                <Rectangle Fill="#d8152f" 
+                           Height="19"/>
+            </StackPanel>
         </Grid>
     </ListViewItem>
 </UserControl>

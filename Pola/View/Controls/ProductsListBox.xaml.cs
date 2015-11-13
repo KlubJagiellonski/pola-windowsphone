@@ -20,12 +20,34 @@ namespace Pola.View.Controls
 {
     public sealed partial class ProductsListBox : UserControl
     {
+        #region Constatns
+
         private const int MaxCount = 4;
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler<ProductEventArgs> ProductSelected;
+        private void OnProductSelected()
+        {
+            if (ProductSelected != null)
+                // TODO: Set real product object
+                ProductSelected(this, new ProductEventArgs(null));
+        }
+
+        #endregion
+
+        #region Constructor
 
         public ProductsListBox()
         {
             this.InitializeComponent();
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         ///  Adds a new collapsed product item to the top of products list.
@@ -40,18 +62,16 @@ namespace Pola.View.Controls
             productItem.VerticalAlignment = VerticalAlignment.Top;
             productItem.Tapped += (sender, e) =>
                 {
-                    int aboveItemsCount = 0;
-                    foreach (ProductItem item in RootGrid.Children)
-                        if (item.Position.Y < productItem.Position.Y)
-                        {
-                            aboveItemsCount++;
-                            item.SlideDown();
-                        }
-                    productItem.SlideUp(aboveItemsCount);
-                    RootGrid.Children.Move((uint)RootGrid.Children.IndexOf(productItem), (uint)RootGrid.Children.Count - 1);
+                    OnProductSelected();
+                    //ExpandProductItem(productItem);
+                    //MoveProductItemToTop(productItem);
+                    //if (productItem.IsCollapsed)
+                    //    productItem.Expand();
+                    //else
+                    //    productItem.Collapse();
                 };
 
-            double y = this.ActualHeight - (RootGrid.Children.Count + 1) * (ProductItem.CollapsedHeight + ProductItem.Space);
+            double y = this.ActualHeight - (RootGrid.Children.Count + 1) * (ProductItem.DefaultHeight + ProductItem.Space);
             ((CompositeTransform)productItem.RenderTransform).TranslateY = y;
             RootGrid.Children.Add(productItem);
 
@@ -72,6 +92,22 @@ namespace Pola.View.Controls
             }
         }
 
+        private void MoveProductItemToTop(ProductItem productItem)
+        {
+            if (!RootGrid.Children.Contains(productItem))
+                return;
+
+            int aboveItemsCount = 0;
+            foreach (ProductItem item in RootGrid.Children)
+                if (item.Position.Y < productItem.Position.Y)
+                {
+                    aboveItemsCount++;
+                    item.SlideDown();
+                }
+            productItem.SlideUp(aboveItemsCount);
+            RootGrid.Children.Move((uint)RootGrid.Children.IndexOf(productItem), (uint)RootGrid.Children.Count - 1);
+        }
+
         private bool ContainsProduct(string barcode)
         {
             foreach (ProductItem item in RootGrid.Children)
@@ -80,5 +116,7 @@ namespace Pola.View.Controls
 
             return false;
         }
+
+        #endregion
     }
 }
