@@ -20,6 +20,7 @@ namespace Pola.View.Controls
     public sealed partial class ProductDetailsPanel : UserControl
     {
         private bool isOpen;
+        private double openPosition = 400;
 
         public bool IsOpen
         {
@@ -43,9 +44,9 @@ namespace Pola.View.Controls
                 else
                 {
                     ContentGrid.Opacity = 0;
-                    ((CompositeTransform)ContentGrid.RenderTransform).TranslateY = 400;
+                    ((CompositeTransform)ContentGrid.RenderTransform).TranslateY = openPosition;
                     ((CompositeTransform)ContentGrid.RenderTransform).ScaleX = 0.95;
-                    ((CompositeTransform)ContentGrid.RenderTransform).ScaleY = 0.5;
+                    ((CompositeTransform)ContentGrid.RenderTransform).ScaleY = 0.75;
                     DismissLayer.Visibility = Visibility.Collapsed;
                     DismissLayer.Opacity = 0;
                 }
@@ -65,8 +66,20 @@ namespace Pola.View.Controls
             ContentGrid.IsHitTestVisible = isOpen;
         }
 
+        public void Open(ProductItem productItem)
+        {
+            GeneralTransform productItemTransform = this.TransformToVisual(productItem);
+            Point productItemPosition = productItemTransform.TransformPoint(new Point(0, ContentGrid.ActualHeight / 2));
+            openPosition = -productItemPosition.Y + 19; // Measured offset just better looking animation.
+            ((CompositeTransform)ContentGrid.RenderTransform).TranslateY = openPosition;
+            FadeInSotryboard.Begin();
+            isOpen = true;
+            ContentGrid.IsHitTestVisible = isOpen;
+        }
+
         public void Close()
         {
+            FadeOutTranslateAnimation.To = openPosition;
             FadeOutSotryboard.Begin();
             isOpen = false;
             ContentGrid.IsHitTestVisible = isOpen;

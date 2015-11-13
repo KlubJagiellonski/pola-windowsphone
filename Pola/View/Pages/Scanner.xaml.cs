@@ -181,7 +181,7 @@ namespace Pola.View.Pages
 
         private void OnProductSelected(object sender, ProductEventArgs e)
         {
-            ProductDetailsPanel.Open();
+            ProductDetailsPanel.Open((ProductItem)sender);
         }
 
         #endregion

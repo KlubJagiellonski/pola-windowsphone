@@ -29,11 +29,10 @@ namespace Pola.View.Controls
         #region Events
 
         public event EventHandler<ProductEventArgs> ProductSelected;
-        private void OnProductSelected()
+        private void OnProductSelected(ProductItem productItem)
         {
             if (ProductSelected != null)
-                // TODO: Set real product object
-                ProductSelected(this, new ProductEventArgs(null));
+                ProductSelected(productItem, new ProductEventArgs(productItem.Product));
         }
 
         #endregion
@@ -62,7 +61,7 @@ namespace Pola.View.Controls
             productItem.VerticalAlignment = VerticalAlignment.Bottom;
             productItem.Tapped += (sender, e) =>
                 {
-                    OnProductSelected();
+                    OnProductSelected(productItem);
                     //MoveProductItemToTop(productItem);
                 };
 
@@ -110,6 +109,14 @@ namespace Pola.View.Controls
                     return true;
 
             return false;
+        }
+
+        public ProductItem GetProductItem(Product product)
+        {
+            foreach (ProductItem productItem in RootGrid.Children)
+                if (productItem.Product == product)
+                    return productItem;
+            return null;
         }
 
         #endregion

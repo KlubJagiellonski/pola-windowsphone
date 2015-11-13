@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pola.Model.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace Pola.View.Controls
         #region Fields
 
         private double targetY;
+        private Product product;
 
         #endregion
 
@@ -80,6 +82,14 @@ namespace Pola.View.Controls
             }
         }
 
+        public Product Product
+        {
+            get
+            {
+                return product;
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -88,6 +98,7 @@ namespace Pola.View.Controls
         {
             this.InitializeComponent();
             this.SetupProjection();
+            product = new Product();
         }
 
         #endregion

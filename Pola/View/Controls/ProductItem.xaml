@@ -49,16 +49,17 @@
             <Grid.Projection>
                 <PlaneProjection/>
             </Grid.Projection>
-            <StackPanel>
-                <TextBlock x:Name="TitleTextBlock"
-                           Text="Nazwa producenta"
-                           Margin="9.5, 4.75"
-                           Foreground="Black" 
-                           FontFamily="Segoe WP Semilight"
-                           FontSize="24"/>
-                <Rectangle Fill="#d8152f" 
-                           Height="19"/>
-            </StackPanel>
+            <TextBlock x:Name="TitleTextBlock"
+                       Text="Nazwa producenta"
+                       Margin="9.5, 4.75"
+                       Foreground="Black" 
+                       FontFamily="Segoe WP Semilight"
+                       FontSize="24"/>
+            <ProgressBar IsIndeterminate="False"
+                         Foreground="#d8152f"
+                         VerticalAlignment="Bottom" 
+                         Value="90"
+                         Background="LightGray"/>
         </Grid>
     </ListViewItem>
 </UserControl>
