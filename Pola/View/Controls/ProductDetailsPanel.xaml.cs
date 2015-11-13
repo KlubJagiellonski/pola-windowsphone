@@ -34,14 +34,18 @@ namespace Pola.View.Controls
                 if (isOpen)
                 {
                     ContentGrid.Opacity = 1;
-                    ((TranslateTransform)ContentGrid.RenderTransform).Y = 0;
+                    ((CompositeTransform)ContentGrid.RenderTransform).TranslateY = 0;
+                    ((CompositeTransform)ContentGrid.RenderTransform).ScaleX = 1;
+                    ((CompositeTransform)ContentGrid.RenderTransform).ScaleY = 1;
                     DismissLayer.Visibility = Visibility.Visible;
                     DismissLayer.Opacity = 0.8;
                 }
                 else
                 {
                     ContentGrid.Opacity = 0;
-                    ((TranslateTransform)ContentGrid.RenderTransform).Y = 400;
+                    ((CompositeTransform)ContentGrid.RenderTransform).TranslateY = 400;
+                    ((CompositeTransform)ContentGrid.RenderTransform).ScaleX = 0.95;
+                    ((CompositeTransform)ContentGrid.RenderTransform).ScaleY = 0.5;
                     DismissLayer.Visibility = Visibility.Collapsed;
                     DismissLayer.Opacity = 0;
                 }

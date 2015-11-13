@@ -63,12 +63,7 @@ namespace Pola.View.Controls
             productItem.Tapped += (sender, e) =>
                 {
                     OnProductSelected();
-                    //ExpandProductItem(productItem);
                     //MoveProductItemToTop(productItem);
-                    //if (productItem.IsCollapsed)
-                    //    productItem.Expand();
-                    //else
-                    //    productItem.Collapse();
                 };
 
             double y = this.ActualHeight - (RootGrid.Children.Count + 1) * (ProductItem.DefaultHeight + ProductItem.Space);

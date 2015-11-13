@@ -125,7 +125,9 @@ namespace Pola.View.Controls
 
         private void Slide(double offset)
         {
-            DoubleAnimation animation = new DoubleAnimation()
+            Storyboard storyboard = new Storyboard();
+
+            DoubleAnimation translateAnimation = new DoubleAnimation()
             {
                 From = Position.Y,
                 To = Position.Y + offset,
@@ -135,10 +137,42 @@ namespace Pola.View.Controls
                     EasingMode = EasingMode.EaseInOut
                 }
             };
-            Storyboard.SetTarget(animation, this);
-            Storyboard.SetTargetProperty(animation, "(UIElement.RenderTransform).(CompositeTransform.TranslateY)");
-            Storyboard storyboard = new Storyboard();
-            storyboard.Children.Add(animation);
+            Storyboard.SetTarget(translateAnimation, this);
+            Storyboard.SetTargetProperty(translateAnimation, "(UIElement.RenderTransform).(CompositeTransform.TranslateY)");
+            storyboard.Children.Add(translateAnimation);
+
+            if (offset < 0)
+            {
+                DoubleAnimation scaleXAnimation = new DoubleAnimation()
+                {
+                    From = 1,
+                    To = 1.05,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.25)),
+                    AutoReverse = true,
+                    EasingFunction = new QuarticEase()
+                    {
+                        EasingMode = EasingMode.EaseOut
+                    }
+                };
+                Storyboard.SetTarget(scaleXAnimation, this);
+                Storyboard.SetTargetProperty(scaleXAnimation, "(UIElement.RenderTransform).(CompositeTransform.ScaleX)");
+                storyboard.Children.Add(scaleXAnimation);
+
+                DoubleAnimation scaleYAnimation = new DoubleAnimation()
+                {
+                    From = 1,
+                    To = 1.05,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.25)),
+                    AutoReverse = true,
+                    EasingFunction = new QuarticEase()
+                    {
+                        EasingMode = EasingMode.EaseOut
+                    }
+                };
+                Storyboard.SetTarget(scaleYAnimation, this);
+                Storyboard.SetTargetProperty(scaleYAnimation, "(UIElement.RenderTransform).(CompositeTransform.ScaleY)");
+                storyboard.Children.Add(scaleYAnimation);
+            }
             storyboard.Begin();
         }
 
