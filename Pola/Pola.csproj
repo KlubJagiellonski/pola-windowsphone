@@ -89,11 +89,14 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="View\ContinousAutoFocus.cs" />
+    <Compile Include="View\Common\ContinousAutoFocus.cs" />
     <Compile Include="Model\Json\Company.cs" />
     <Compile Include="Model\Json\Product.cs" />
     <Compile Include="Model\Json\Report.cs" />
     <Compile Include="Model\PolaClient.cs" />
+    <Compile Include="View\Controls\CompanyPanel.xaml.cs">
+      <DependentUpon>CompanyPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Pages\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -101,7 +104,7 @@
       <DependentUpon>Scanner.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\QrCodeDetectorEventSource.cs" />
+    <Compile Include="View\Common\QrCodeDetectorEventSource.cs" />
     <Compile Include="View\Pages\Start.xaml.cs">
       <DependentUpon>Start.xaml</DependentUpon>
     </Compile>
@@ -125,6 +128,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\Controls\CompanyPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Pages\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -160,9 +167,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="View\Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

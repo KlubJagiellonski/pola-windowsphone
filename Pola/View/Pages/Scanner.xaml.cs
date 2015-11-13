@@ -2,20 +2,18 @@
 using Pola.Common;
 using Pola.Model;
 using Pola.Model.Json;
+using Pola.View.Common;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VideoEffects;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
-using Windows.Graphics.Display;
-using Windows.Media;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
-using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.System.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -31,19 +29,19 @@ using ZXing.Common;
 namespace Pola.View.Pages
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A page that shows a camera preview to scan barcodes and show info about found companies.
     /// </summary>
     public sealed partial class Scanner : Page
     {
+        #region Fields
+
         private NavigationHelper navigationHelper;
 
-        DisplayRequest displayRequest = new DisplayRequest();
-        MediaCapture m_capture;
-        ContinuousAutoFocus m_autoFocus;
-        bool m_initializing;
-        string code = null;
-
-        BarcodeReader m_reader = new BarcodeReader
+        private DisplayRequest displayRequest = new DisplayRequest();
+        private MediaCapture mediaCapture;
+        private ContinuousAutoFocus autoFocus;
+        private bool isMediaCaptureInitializing;
+        private BarcodeReader barcodeReader = new BarcodeReader
         {
             Options = new DecodingOptions
             {
@@ -51,8 +49,21 @@ namespace Pola.View.Pages
                 TryHarder = true
             }
         };
-        Stopwatch m_time = new Stopwatch();
-        volatile bool m_snapRequested;
+
+        private string code = null;
+
+        #endregion
+
+        #region Properties
+
+        public NavigationHelper NavigationHelper
+        {
+            get { return this.navigationHelper; }
+        }
+
+        #endregion
+
+        #region Constructors
 
         public Scanner()
         {
@@ -62,21 +73,9 @@ namespace Pola.View.Pages
             this.navigationHelper = new NavigationHelper(this);
         }
 
-        public void SetupApplicatoinBar()
-        {
-            this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
-        }
+        #endregion
 
-        public void SetupStatusBar()
-        {
-            StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-            statusBar.BackgroundOpacity = 0.6;
-        }
-
-        public NavigationHelper NavigationHelper
-        {
-            get { return this.navigationHelper; }
-        }
+        #region Event handlers
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
@@ -92,11 +91,94 @@ namespace Pola.View.Pages
 
             Application.Current.Resuming += OnResuming;
             Application.Current.Suspending += OnSuspending;
-            Window.Current.VisibilityChanged += Current_VisibilityChanged;
+            Window.Current.VisibilityChanged += OnWindowVisibilityChanged;
 
             var ignore = InitializeCaptureAsync();
         }
 
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            this.navigationHelper.OnNavigatedFrom(e);
+
+            Application.Current.Resuming -= OnResuming;
+            Application.Current.Suspending -= OnSuspending;
+            Window.Current.VisibilityChanged -= OnWindowVisibilityChanged;
+
+            displayRequest.RequestRelease();
+
+            await DisposeCaptureAsync();
+        }
+
+        private void OnResuming(object sender, object e)
+        {
+            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await InitializeCaptureAsync();
+            });
+        }
+
+        private void OnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+        {
+            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await DisposeCaptureAsync();
+            });
+        }
+
+        private async void OnWindowVisibilityChanged(object sender, VisibilityChangedEventArgs e)
+        {
+            if (e.Visible)
+                await InitializeCaptureAsync();
+            else
+                await DisposeCaptureAsync();
+        }
+
+        private void OnMediaCaptureFailed(MediaCapture sender, MediaCaptureFailedEventArgs errorEventArgs)
+        {
+            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await DisposeCaptureAsync();
+            });
+        }
+
+        private void OnPageSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateOverlaySize();
+        }
+
+        private void OnRateClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnFeedbackClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnAboutClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(About));
+        }
+
+        #endregion
+
+        #region Methods
+
+        public void SetupApplicatoinBar()
+        {
+            this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+        }
+
+        public void SetupStatusBar()
+        {
+            StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+            statusBar.BackgroundOpacity = 0.6;
+        }
+
+        /// <summary>
+        /// Updates overlay size to make it fullscreen and keep proportions.
+        /// </summary>
         private void UpdateOverlaySize()
         {
             double scaleX = this.ActualWidth / Overlay.ActualWidth;
@@ -110,65 +192,13 @@ namespace Pola.View.Pages
             };
         }
 
-        protected override async void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            this.navigationHelper.OnNavigatedFrom(e);
-
-            Application.Current.Resuming -= OnResuming;
-            Application.Current.Suspending -= OnSuspending;
-            Window.Current.VisibilityChanged -= Current_VisibilityChanged;
-
-            displayRequest.RequestRelease();
-
-            await DisposeCaptureAsync();
-        }
-
-        private void OnResuming(object sender, object e)
-        {
-            // Dispatch call to the UI thread since the event may get fired on some other thread
-            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-            {
-                await InitializeCaptureAsync();
-            });
-        }
-
-        private void OnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
-        {
-            // Dispatch call to the UI thread since the event may get fired on some other thread
-            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-            {
-                await DisposeCaptureAsync();
-            });
-        }
-
-        async void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
-        {
-            if (e.Visible)
-            {
-                await InitializeCaptureAsync();
-            }
-            else
-            {
-                await DisposeCaptureAsync();
-            }
-        }
-
-        void capture_Failed(MediaCapture sender, MediaCaptureFailedEventArgs errorEventArgs)
-        {
-            // Dispatch call to the UI thread since the event may get fired on some other thread
-            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-            {
-                await DisposeCaptureAsync();
-            });
-        }
-
         private async Task InitializeCaptureAsync()
         {
-            if (m_initializing || (m_capture != null))
+            if (isMediaCaptureInitializing || (mediaCapture != null))
             {
                 return;
             }
-            m_initializing = true;
+            isMediaCaptureInitializing = true;
 
             try
             {
@@ -178,12 +208,12 @@ namespace Pola.View.Pages
                     StreamingCaptureMode = StreamingCaptureMode.Video
                 };
 
-                var capture = new MediaCapture();
-                await capture.InitializeAsync(settings);
-                capture.SetPreviewRotation(VideoRotation.Clockwise90Degrees);
+                var newMediaCapture = new MediaCapture();
+                await newMediaCapture.InitializeAsync(settings);
+                newMediaCapture.SetPreviewRotation(VideoRotation.Clockwise90Degrees);
 
                 // Select the capture resolution closest to screen resolution
-                var formats = capture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview);
+                var formats = newMediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview);
                 var format = (VideoEncodingProperties)formats.OrderBy((item) =>
                 {
                     var props = (VideoEncodingProperties)item;
@@ -191,8 +221,8 @@ namespace Pola.View.Pages
                 }).First();
 
                 Debug.WriteLine("{0} x {1}", format.Width, format.Height);
-                
-                await capture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
+
+                await newMediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
 
                 // Make the preview full screen
                 var scale = Math.Min(this.ActualWidth / format.Height, this.ActualHeight / format.Width);
@@ -207,44 +237,31 @@ namespace Pola.View.Pages
 
                 // Enable QR code detection
                 var definition = new LumiaAnalyzerDefinition(ColorMode.Yuv420Sp, 640, AnalyzeBitmap);
-                await capture.AddEffectAsync(MediaStreamType.VideoPreview, definition.ActivatableClassId, definition.Properties);
+                await newMediaCapture.AddEffectAsync(MediaStreamType.VideoPreview, definition.ActivatableClassId, definition.Properties);
 
                 // Start preview
-                m_time.Restart();
-                Preview.Source = capture;
-                await capture.StartPreviewAsync();
+                Preview.Source = newMediaCapture;
+                await newMediaCapture.StartPreviewAsync();
 
-                capture.Failed += capture_Failed;
+                newMediaCapture.Failed += OnMediaCaptureFailed;
 
-                m_autoFocus = await ContinuousAutoFocus.StartAsync(capture.VideoDeviceController.FocusControl);
+                autoFocus = await ContinuousAutoFocus.StartAsync(newMediaCapture.VideoDeviceController.FocusControl);
 
-                m_capture = capture;
+                mediaCapture = newMediaCapture;
             }
             catch (Exception e)
             {
-                //TextLog.Text = String.Format("Failed to start the camera: {0}", e.Message);
+                Debug.WriteLine("Failed to start the camera: {0}", e.Message);
             }
 
-            m_initializing = false;
+            isMediaCaptureInitializing = false;
         }
 
         private async void AnalyzeBitmap(Bitmap bitmap, TimeSpan time)
         {
-            if (code != null)
-                return;
-
-            if (m_snapRequested)
-            {
-                m_snapRequested = false;
-
-                IBuffer jpegBuffer = (new JpegRenderer(new BitmapImageSource(bitmap))).RenderAsync().AsTask().Result;
-                var jpegFile = KnownFolders.PicturesLibrary.CreateFileAsync("QrCodeSnap.jpg", CreationCollisionOption.GenerateUniqueName).AsTask().Result;
-                FileIO.WriteBufferAsync(jpegFile, jpegBuffer).AsTask().Wait();
-            }
-
             Log.Events.QrCodeDecodeStart();
 
-            Result result = m_reader.Decode(
+            Result result = barcodeReader.Decode(
                 bitmap.Buffers[0].Buffer.ToArray(),
                 (int)bitmap.Buffers[0].Pitch, // Should be width here but I haven't found a way to pass both width and stride to ZXing yet
                 (int)bitmap.Dimensions.Height,
@@ -253,45 +270,56 @@ namespace Pola.View.Pages
 
             Log.Events.QrCodeDecodeStop(result != null);
 
-            if (result != null)
+            if (result != null && IsValidGtin(result.Text))
             {
-                code = result.Text;
+                if (code != result.Text)
+                {
+                    Debug.WriteLine(result.Text);
+                    code = result.Text;
+                }
                 Product product = await PolaClient.FindProduct(code);
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    if (product != null && product.Company != null && product.Company.Name != null)
                     {
-                        if (product != null && product.Company != null && product.Company.Name != null)
-                        {
-                            ProductItem.Text = product.Company.Name;
-                        }
-                    });
+                        CompanyItem.Title = product.Company.Name;
+                    }
+                });
             }
 
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                var elapsedTimeInMS = m_time.ElapsedMilliseconds;
-                m_time.Restart();
-
                 if (result == null)
                 {
                     //TextLog.Text = String.Format("[{0,4}ms] No barcode", elapsedTimeInMS);
 
-                    if (m_autoFocus != null)
+                    if (autoFocus != null)
                     {
-                        m_autoFocus.BarcodeFound = false;
+                        autoFocus.BarcodeFound = false;
                     }
 
                 }
                 else
                 {
-                    
+
                     //TextLog.Text = String.Format("[{0,4}ms] {1}", elapsedTimeInMS, result.Text);
 
-                    if (m_autoFocus != null)
+                    if (autoFocus != null)
                     {
-                        m_autoFocus.BarcodeFound = true;
+                        autoFocus.BarcodeFound = true;
                     }
                 }
             });
+        }
+
+        private static Regex gtinRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,14})$");
+        public static bool IsValidGtin(string code)
+        {
+            if (!(gtinRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12, 13 or 14 digits.
+            string extendedCode = code.PadLeft(14, '0'); // Stuff zeros at start to garantee 14 digits.
+            int[] mult = Enumerable.Range(0, 13).Select(i => ((int)(extendedCode[i] - '0')) * ((i % 2 == 0) ? 3 : 1)).ToArray(); // STEP 1: Without check digit, "Multiply value of each position" by 3 or 1.
+            int sum = mult.Sum(); // STEP 2: "Add results together to create sum".
+            return (10 - (sum % 10)) % 10 == int.Parse(extendedCode[13].ToString()); // STEP 3: Equivalent to "Subtract the sum from the nearest equal or higher multiple of ten = CHECK DIGIT".
         }
 
         public static async Task<string> GetBackOrDefaulCameraIdAsync()
@@ -318,47 +346,29 @@ namespace Pola.View.Pages
         {
             Preview.Source = null;
 
-            if (m_autoFocus != null)
+            if (autoFocus != null)
             {
-                m_autoFocus.Dispose();
-                m_autoFocus = null;
+                autoFocus.Dispose();
+                autoFocus = null;
             }
 
-            MediaCapture capture;
+            MediaCapture mediaCapture;
             lock (this)
             {
-                capture = m_capture;
-                m_capture = null;
+                mediaCapture = this.mediaCapture;
+                this.mediaCapture = null;
             }
 
-            if (capture != null)
+            if (mediaCapture != null)
             {
-                capture.Failed -= capture_Failed;
+                mediaCapture.Failed -= OnMediaCaptureFailed;
 
-                await capture.StopPreviewAsync();
+                await mediaCapture.StopPreviewAsync();
 
-                capture.Dispose();
+                mediaCapture.Dispose();
             }
         }
 
-        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            UpdateOverlaySize();
-        }
-
-        private void OnRateClick(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void OnFeedbackClick(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void OnAboutClick(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(About));
-        }
+        #endregion
     }
 }

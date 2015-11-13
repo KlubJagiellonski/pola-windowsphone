@@ -1,14 +1,14 @@
-﻿<Page
-    x:Class="Pola.View.Pages.Scanner"
+﻿<Page x:Class="Pola.View.Pages.Scanner"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Pola.View.Pages"
+    xmlns:controls="using:Pola.View.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
     NavigationCacheMode="Required" 
-    SizeChanged="Page_SizeChanged">
+    SizeChanged="OnPageSizeChanged">
 
     <Grid Margin="0, -26.6667">
         <CaptureElement Name="Preview" 
@@ -17,7 +17,8 @@
                         Stretch="UniformToFill"/>
         <Canvas x:Name="Overlay" 
                 Width="400"
-                Height="640">
+                Height="640"
+                CacheMode="BitmapCache">
             <Path Fill="#40000000">
                 <Path.Data>
                     <GeometryGroup>
@@ -35,14 +36,7 @@
         </Canvas>
         <StackPanel Margin="0, 26.6667"
                     VerticalAlignment="Bottom">
-            <Grid Margin="19, 9.5" Background="White"
-                  Height="38">
-                <TextBlock x:Name="ProductItem"
-                           VerticalAlignment="Center"
-                           Margin="9.5, 0"
-                           Foreground="Black" 
-                           Style="{StaticResource ControlHeaderTextBlockStyle}"/>
-            </Grid>
+            <controls:CompanyPanel x:Name="CompanyItem"/>
         </StackPanel>
     </Grid>
     <Page.BottomAppBar>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Media.Devices;
 
-namespace Pola.View
+namespace Pola.View.Common
 {
     class ContinuousAutoFocus : IDisposable
     {
