@@ -3,6 +3,7 @@ using Pola.Common;
 using Pola.Model;
 using Pola.Model.Json;
 using Pola.View.Common;
+using Pola.View.Controls;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -282,7 +283,7 @@ namespace Pola.View.Pages
                 {
                     if (product != null && product.Company != null && product.Company.Name != null)
                     {
-                        CompanyItem.Title = product.Company.Name;
+                        //CompanyItem.Title = product.Company.Name;
                     }
                 });
             }
@@ -313,7 +314,7 @@ namespace Pola.View.Pages
         }
 
         private static Regex gtinRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,14})$");
-        public static bool IsValidGtin(string code)
+        public static bool IsValidGtin(string code) 
         {
             if (!(gtinRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12, 13 or 14 digits.
             string extendedCode = code.PadLeft(14, '0'); // Stuff zeros at start to garantee 14 digits.
@@ -370,5 +371,16 @@ namespace Pola.View.Pages
         }
 
         #endregion
+
+        private void CompanyItem_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            ProductItem panel = (ProductItem)sender;
+            panel.Expand();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ProductsListBox.AddProduct(string.Empty);
+        }
     }
 }
