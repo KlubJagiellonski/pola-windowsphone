@@ -50,15 +50,17 @@
                 <PlaneProjection/>
             </Grid.Projection>
             <TextBlock x:Name="TitleTextBlock"
-                       Text="Nazwa producenta"
-                       Margin="9.5, 4.75"
+                       Text="Wyszukiwanie..."
+                       Opacity="0.5"
+                       Margin="9.5, 4.75, 0, 4.75"
                        Foreground="Black" 
                        FontFamily="Segoe WP Semilight"
                        FontSize="24"/>
-            <ProgressBar IsIndeterminate="False"
+            <ProgressBar x:Name="ProgressBar" 
+                         IsIndeterminate="True"
                          Foreground="#d8152f"
                          VerticalAlignment="Bottom" 
-                         Value="90"
+                         Value="0"
                          Background="LightGray"/>
         </Grid>
     </ListViewItem>

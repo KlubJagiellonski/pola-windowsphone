@@ -1,4 +1,5 @@
-﻿using Pola.Model.Json;
+﻿using Pola.Model;
+using Pola.Model.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,7 +32,7 @@ namespace Pola.View.Controls
 
         #region Fields
 
-        private double targetY;
+        private string barcode;
         private Product product;
 
         #endregion
@@ -66,7 +68,13 @@ namespace Pola.View.Controls
 
         #endregion
 
-        public string Barcode { get; set; }
+        public string Barcode
+        {
+            get
+            {
+                return barcode;
+            }
+        }
 
         public Point Position
         {
@@ -94,11 +102,12 @@ namespace Pola.View.Controls
 
         #region Constructor
 
-        public ProductItem()
+        public ProductItem(string barcode)
         {
             this.InitializeComponent();
             this.SetupProjection();
-            product = new Product();
+            this.barcode = barcode;
+            FindProduct();
         }
 
         #endregion
@@ -118,6 +127,25 @@ namespace Pola.View.Controls
         #endregion
 
         #region Methods
+
+        private async void FindProduct()
+        {
+            product = await PolaClient.FindProduct(barcode);
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ProgressBar.IsIndeterminate = false;
+                if (product.PlScore != null)
+                    ProgressBar.Value = (int)product.PlScore;
+
+                if (product.Company != null && product.Company.Name != null)
+                {
+                    TitleTextBlock.Text = product.Company.Name;
+                    TitleTextBlock.Opacity = 1;
+                }
+                else
+                    TitleTextBlock.Text = "Nieznany produkt";
+            });
+        }
 
         private void SetupProjection()
         {

@@ -53,7 +53,7 @@ namespace Pola.View.Pages
             }
         };
 
-        private string code = null;
+        private string lastBarcode = null;
 
         #endregion
 
@@ -297,52 +297,37 @@ namespace Pola.View.Pages
 
             Log.Events.QrCodeDecodeStop(result != null);
 
-            if (result != null && IsValidGtin(result.Text))
-            {
-                if (code != result.Text)
-                {
-                    Debug.WriteLine(result.Text);
-                    code = result.Text;
-                }
-                Product product = await PolaClient.FindProduct(code);
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    if (product != null && product.Company != null && product.Company.Name != null)
-                    {
-                        //CompanyItem.Title = product.Company.Name;
-                    }
-                });
-            }
-
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                if (result == null)
+                if (result != null && IsValidEan(result.Text))
                 {
-                    //TextLog.Text = String.Format("[{0,4}ms] No barcode", elapsedTimeInMS);
-
                     if (autoFocus != null)
-                    {
-                        autoFocus.BarcodeFound = false;
-                    }
+                        autoFocus.BarcodeFound = true;
 
+                    string barcode = result.Text;
+                    BarcodeTextBlock.Text = barcode;
+
+                    if (lastBarcode != barcode)
+                    {
+                        Debug.WriteLine(barcode);
+                        lastBarcode = barcode;
+                        ProductsListBox.AddProduct(barcode);
+                    }
                 }
                 else
                 {
-
-                    //TextLog.Text = String.Format("[{0,4}ms] {1}", elapsedTimeInMS, result.Text);
-
                     if (autoFocus != null)
-                    {
-                        autoFocus.BarcodeFound = true;
-                    }
+                        autoFocus.BarcodeFound = false;
+
+                    BarcodeTextBlock.Text = string.Empty;
                 }
             });
         }
 
-        private static Regex gtinRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,14})$");
-        public static bool IsValidGtin(string code) 
+        private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{12,13})$");
+        public static bool IsValidEan(string code) 
         {
-            if (!(gtinRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12, 13 or 14 digits.
+            if (!(eanRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12, 13 or 14 digits.
             string extendedCode = code.PadLeft(14, '0'); // Stuff zeros at start to garantee 14 digits.
             int[] mult = Enumerable.Range(0, 13).Select(i => ((int)(extendedCode[i] - '0')) * ((i % 2 == 0) ? 3 : 1)).ToArray(); // STEP 1: Without check digit, "Multiply value of each position" by 3 or 1.
             int sum = mult.Sum(); // STEP 2: "Add results together to create sum".

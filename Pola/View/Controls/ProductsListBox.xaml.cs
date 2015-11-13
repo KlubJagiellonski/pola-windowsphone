@@ -57,7 +57,13 @@ namespace Pola.View.Controls
             if (RootGrid.Children.Count > MaxCount)
                 return;
 
-            ProductItem productItem = new ProductItem();
+            if (ContainsProduct(barcode))
+            {
+                MoveProductItemToTop(GetProductItem(barcode));
+                return;
+            }
+
+            ProductItem productItem = new ProductItem(barcode);
             productItem.VerticalAlignment = VerticalAlignment.Bottom;
             productItem.Tapped += (sender, e) =>
                 {
@@ -65,7 +71,7 @@ namespace Pola.View.Controls
                     //MoveProductItemToTop(productItem);
                 };
 
-            double y = - RootGrid.Children.Count * (ProductItem.DefaultHeight + ProductItem.Space);
+            double y = -RootGrid.Children.Count * (ProductItem.DefaultHeight + ProductItem.Space);
             ((CompositeTransform)productItem.RenderTransform).TranslateY = y;
             RootGrid.Children.Add(productItem);
 
@@ -109,6 +115,14 @@ namespace Pola.View.Controls
                     return true;
 
             return false;
+        }
+
+        public ProductItem GetProductItem(string barcode)
+        {
+            foreach (ProductItem item in RootGrid.Children)
+                if (item.Barcode.Equals(barcode))
+                    return item;
+            return null;
         }
 
         public ProductItem GetProductItem(Product product)
