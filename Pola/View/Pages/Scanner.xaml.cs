@@ -174,11 +174,6 @@ namespace Pola.View.Pages
             Frame.Navigate(typeof(About));
         }
 
-        private void OnAddItemClick(object sender, RoutedEventArgs e)
-        {
-            ProductsListBox.AddProduct(string.Empty);
-        }
-
         private void OnProductSelected(object sender, ProductEventArgs e)
         {
             ProductDetailsPanel.Open((ProductItem)sender);
