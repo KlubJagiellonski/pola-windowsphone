@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pola.Data
 {
+    /// <summary>
+    /// Provides application settings as static properties. 
+    /// </summary>
     public static class Settings
     {
         private const string DeviceIdKey = "DeviceId";
 
+        /// <summary>
+        /// Gets device ID generated from GUID. It stays the same as long as the app is isntalled on the phone.
+        /// </summary>
         public static string DeviceId
         {
             get
@@ -21,11 +23,6 @@ namespace Pola.Data
                     SetValue(DeviceIdKey, deviceId);
                 }
                 return deviceId;
-            }
-
-            set
-            {
-                SetValue(DeviceIdKey, value);
             }
         }
 
