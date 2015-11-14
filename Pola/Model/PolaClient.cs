@@ -14,6 +14,9 @@ using Windows.System.Profile;
 
 namespace Pola.Model
 {
+    /// <summary>
+    /// Provides methods to communicate with Pola backend.
+    /// </summary>
     public class PolaClient
     {
         public const string BaseUrl = @"https://pola-staging.herokuapp.com";
@@ -24,17 +27,28 @@ namespace Pola.Model
             return await FindProduct(code.ToString());
         }
 
-        public static async Task<Product> FindProduct(string code)
+        /// <summary>
+        /// Returns info about product and company using barcode. The barcode should be in EAN-13 format.
+        /// </summary>
+        /// <param name="barcode">EAN-13 barcode of a product.</param>
+        /// <returns>Product details.</returns>
+        public static async Task<Product> FindProduct(string barcode)
         {
-            WebRequest productRequest = WebRequest.Create(string.Format("{0}/a/get_by_code/{1}?device_id={2}", BaseUrl, code, DeviceId));
+            string requestUri = string.Format("{0}/a/get_by_code/{1}?device_id={2}", BaseUrl, barcode, DeviceId);
+            Debug.WriteLine(requestUri);
+            WebRequest productRequest = WebRequest.Create(requestUri);
             using (WebResponse productResponse = await productRequest.GetResponseAsync())
             using (StreamReader productReader = new StreamReader(productResponse.GetResponseStream()))
             {
                 try
                 {
                     string productString = productReader.ReadToEnd();
-                    Debug.WriteLine(productString);
-                    return JsonConvert.DeserializeObject<Product>(productString);
+                    Product product = JsonConvert.DeserializeObject<Product>(productString);
+                    
+#if DEBUG
+                    Debug.WriteLine(JsonConvert.SerializeObject(product, Formatting.Indented));
+#endif
+                    return product;
                 }
                 catch
                 {
