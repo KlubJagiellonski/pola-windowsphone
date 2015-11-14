@@ -90,11 +90,14 @@
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Data\Settings.cs" />
+    <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="View\Common\ContinousAutoFocus.cs" />
     <Compile Include="Model\Json\Company.cs" />
     <Compile Include="Model\Json\Product.cs" />
     <Compile Include="Model\Json\Report.cs" />
     <Compile Include="Model\PolaClient.cs" />
+    <Compile Include="View\Common\PolaBrushes.cs" />
+    <Compile Include="View\Common\PolaConstants.cs" />
     <Compile Include="View\Controls\ProductDetailsPanel.xaml.cs">
       <DependentUpon>ProductDetailsPanel.xaml</DependentUpon>
     </Compile>

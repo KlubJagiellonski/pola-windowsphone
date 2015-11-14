@@ -1,5 +1,6 @@
 ﻿using Pola.Model;
 using Pola.Model.Json;
+using Pola.View.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,12 +22,16 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Pola.View.Controls
 {
+    /// <summary>
+    /// Shows the name of the company that has produced a particular product and its PL score. 
+    /// This control is used as an item on a list of products found by barcode. 
+    /// </summary>
     public sealed partial class ProductItem : UserControl
     {
         #region Constants
 
-        public const double DefaultHeight = 48;
-        public const double Space = 9.5;
+        public static readonly double DefaultHeight = (Double)App.Current.Resources["PolaProductItemHeight"];
+        public static readonly double Space = (Double)App.Current.Resources["PolaProductItemSpace"];
 
         #endregion
 
@@ -50,24 +55,9 @@ namespace Pola.View.Controls
 
         #region Properties
 
-        #region Title
-
-        public string Title
-        {
-            get { return (string)GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
-        }
-
-        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(ProductItem), new PropertyMetadata(0, OnTitleChanged));
-
-        private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ProductItem panel = (ProductItem)d;
-            panel.TitleTextBlock.Text = (string)e.NewValue;
-        }
-
-        #endregion
-
+        /// <summary>
+        /// Gets barcode of product.
+        /// </summary>
         public string Barcode
         {
             get
@@ -76,7 +66,10 @@ namespace Pola.View.Controls
             }
         }
 
-        public Point Position
+        /// <summary>
+        /// Sets on gets translation of the control based on its transform matrix.
+        /// </summary>
+        public Point Translation
         {
             get
             {
@@ -90,6 +83,9 @@ namespace Pola.View.Controls
             }
         }
 
+        /// <summary>
+        /// Gets product found by its barcode.
+        /// </summary>
         public Product Product
         {
             get
@@ -102,6 +98,10 @@ namespace Pola.View.Controls
 
         #region Constructor
 
+        /// <summary>
+        /// Creates a new product item. Once it's created it starts downloading product info.
+        /// </summary>
+        /// <param name="barcode">Barcode of product.</param>
         public ProductItem(string barcode)
         {
             this.InitializeComponent();
@@ -134,6 +134,13 @@ namespace Pola.View.Controls
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ProgressBar.IsIndeterminate = false;
+
+                if (product == null)
+                {
+                    TitleTextBlock.Text = "Brak informacji";
+                    return;
+                }
+
                 if (product.PlScore != null)
                     ProgressBar.Value = (int)product.PlScore;
 
@@ -143,7 +150,28 @@ namespace Pola.View.Controls
                     TitleTextBlock.Opacity = 1;
                 }
                 else
-                    TitleTextBlock.Text = "Nieznany produkt";
+                {
+                    if (!product.IsVerified && product.NeedsReport)
+                    {
+                        TitleTextBlock.Opacity = 1;
+                        TitleTextBlock.Text = "Pomóż Poli zdobyć dane";
+                    }
+                    else
+                    {
+                        TitleTextBlock.Text = "Brak informacji";
+                    }
+                }
+
+                if (product.IsVerified)
+                {
+                    RootGrid.Background = PolaBrushes.ProductVerifiedBackground;
+                    ProgressBar.Background = PolaBrushes.ProductVerifiedProgressBarBackground;
+                }
+                else
+                {
+                    RootGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
+                    ProgressBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
+                }
             });
         }
 
@@ -168,8 +196,8 @@ namespace Pola.View.Controls
 
             DoubleAnimation translateAnimation = new DoubleAnimation()
             {
-                From = Position.Y,
-                To = Position.Y + offset,
+                From = Translation.Y,
+                To = Translation.Y + offset,
                 Duration = new Duration(TimeSpan.FromSeconds(0.5)),
                 EasingFunction = new QuarticEase()
                 {

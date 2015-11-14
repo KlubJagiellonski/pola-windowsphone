@@ -27,20 +27,22 @@
                     </GeometryGroup>
                 </Path.Data>
             </Path>
-            <Path Stroke="#80FFFFFF"
-                  StrokeThickness="1">
+            <Path x:Name="BarcodeFrame" 
+                  Stroke="{StaticResource PolaBarcodeFrameStrokeBrush}"
+                  StrokeThickness="{StaticResource PolaBarcodeFrameThickness}">
                 <Path.Data>
                     <RectangleGeometry Rect="60 200 280 140" />
                 </Path.Data>
             </Path>
         </Canvas>
-        <TextBlock x:Name="BarcodeTextBlock" Foreground="White"
-                   Text=""
+        <TextBlock x:Name="BarcodeTextBlock" 
+                   Foreground="White"
+                   Opacity="1"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
-                   FontFamily="Segoe WP"
+                   FontFamily="Segoe WP Bold"
                    FontSize="24"
-                   Margin="0, 76, 0, 0"/>
+                   Margin="0, 80, 0, 0"/>
         <controls:ProductsListBox x:Name="ProductsListBox" 
                                   Margin="0, 26.6667" 
                                   ProductSelected="OnProductSelected"/>
@@ -49,7 +51,7 @@
     </Grid>
     <Page.BottomAppBar>
         <CommandBar Foreground="White"
-                    Background="#d8152f">
+                    Background="{StaticResource PolaRedBrush}">
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="RateButton" 
                               Label="rate and review" Click="OnRateClick"/>

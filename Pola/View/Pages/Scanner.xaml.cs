@@ -54,6 +54,10 @@ namespace Pola.View.Pages
         };
 
         private string lastBarcode = null;
+        private DispatcherTimer hideBarcodeTimer = new DispatcherTimer()
+        {
+            Interval = TimeSpan.FromSeconds(1),
+        };
 
         #endregion
 
@@ -72,6 +76,8 @@ namespace Pola.View.Pages
         {
             this.InitializeComponent();
             this.SetupApplicatoinBar();
+            this.SetupBarcodeTimer();
+
             this.navigationHelper = new NavigationHelper(this);
             HardwareButtons.BackPressed += OnBackPressed;
         }
@@ -179,6 +185,16 @@ namespace Pola.View.Pages
             ProductDetailsPanel.Open((ProductItem)sender);
         }
 
+        private void OnHideBarcodeTimerTick(object sender, object e)
+        {
+            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    BarcodeTextBlock.Opacity = 0;
+                    BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStroke;
+                    BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameThickness;
+                });
+        }
+
         #endregion
 
         #region Methods
@@ -186,6 +202,11 @@ namespace Pola.View.Pages
         public void SetupApplicatoinBar()
         {
             this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+        }
+
+        public void SetupBarcodeTimer()
+        {
+            hideBarcodeTimer.Tick += OnHideBarcodeTimerTick;
         }
 
         /// <summary>
@@ -279,7 +300,7 @@ namespace Pola.View.Pages
             isMediaCaptureInitializing = false;
         }
 
-        private async void AnalyzeBitmap(Bitmap bitmap, TimeSpan time)
+        private void AnalyzeBitmap(Bitmap bitmap, TimeSpan time)
         {
             Log.Events.QrCodeDecodeStart();
 
@@ -300,7 +321,11 @@ namespace Pola.View.Pages
                         autoFocus.BarcodeFound = true;
 
                     string barcode = result.Text;
-                    BarcodeTextBlock.Text = barcode;
+                    BarcodeTextBlock.Text = barcode.ToEanString();
+                    BarcodeTextBlock.Opacity = 1;
+                    BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStrokeActive;
+                    BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameActiveThickness;
+                    hideBarcodeTimer.Start();
 
                     if (lastBarcode != barcode)
                     {
@@ -313,14 +338,12 @@ namespace Pola.View.Pages
                 {
                     if (autoFocus != null)
                         autoFocus.BarcodeFound = false;
-
-                    BarcodeTextBlock.Text = string.Empty;
                 }
             });
         }
 
         private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,14})$");
-        public static bool IsValidEan(string code) 
+        public static bool IsValidEan(string code)
         {
             if (!(eanRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12, 13 or 14 digits.
             string extendedCode = code.PadLeft(14, '0'); // Stuff zeros at start to garantee 14 digits.

@@ -44,7 +44,7 @@
                   VerticalContentAlignment="Stretch">
         <Grid x:Name="RootGrid" 
               Margin="19, 0, 19, 9.5" 
-              Background="White"
+              Background="{StaticResource PolaProductNotVerifiedBackgroundBrush}"
               Height="48">
             <Grid.Projection>
                 <PlaneProjection/>
@@ -58,7 +58,7 @@
                        FontSize="24"/>
             <ProgressBar x:Name="ProgressBar" 
                          IsIndeterminate="True"
-                         Foreground="#d8152f"
+                         Foreground="{StaticResource PolaRedBrush}"
                          VerticalAlignment="Bottom" 
                          Value="0"
                          Background="LightGray"/>

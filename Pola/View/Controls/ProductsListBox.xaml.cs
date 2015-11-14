@@ -83,7 +83,7 @@ namespace Pola.View.Controls
                         RootGrid.Children.Remove(itemToRemove);
                         RootGrid.Children.OrderBy((item) =>
                             {
-                                return ((ProductItem)item).Position.Y;
+                                return ((ProductItem)item).Translation.Y;
                             });
                     };
                 itemToRemove.Hide();
@@ -99,7 +99,7 @@ namespace Pola.View.Controls
 
             int aboveItemsCount = 0;
             foreach (ProductItem item in RootGrid.Children)
-                if (item.Position.Y < productItem.Position.Y)
+                if (item.Translation.Y < productItem.Translation.Y)
                 {
                     aboveItemsCount++;
                     item.SlideDown();
