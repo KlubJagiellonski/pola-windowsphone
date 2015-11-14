@@ -319,7 +319,7 @@ namespace Pola.View.Pages
             });
         }
 
-        private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{12,13})$");
+        private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,14})$");
         public static bool IsValidEan(string code) 
         {
             if (!(eanRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12, 13 or 14 digits.
