@@ -1,7 +1,5 @@
 ﻿using Lumia.Imaging;
 using Pola.Common;
-using Pola.Model;
-using Pola.Model.Json;
 using Pola.View.Common;
 using Pola.View.Controls;
 using System;
@@ -11,11 +9,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VideoEffects;
+using Windows.ApplicationModel;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Phone.UI.Input;
+using Windows.System;
 using Windows.System.Display;
 using Windows.UI;
 using Windows.UI.Core;
@@ -56,7 +56,7 @@ namespace Pola.View.Pages
         private string lastBarcode = null;
         private DispatcherTimer hideBarcodeTimer = new DispatcherTimer()
         {
-            Interval = TimeSpan.FromSeconds(1),
+            Interval = TimeSpan.FromSeconds(1.5),
         };
 
         #endregion
@@ -167,12 +167,18 @@ namespace Pola.View.Pages
 
         private void OnRateClick(object sender, RoutedEventArgs e)
         {
-
+            string appid = Windows.ApplicationModel.Package.Current.Id.Name;
+            var ignore = Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + appid)); 
         }
 
         private void OnFeedbackClick(object sender, RoutedEventArgs e)
         {
-
+            string version = Package.Current.Id.Version.ToVersion().ToString();
+            string email = "kontakt@pola-app.pl";
+            string subject = string.Format("Pola {0}, Windows Phone", version);
+            string body = "";
+            Uri mailto = new Uri(string.Format("mailto:?to={0}&subject={1}&body={2}", email, subject, body));
+            var ignore = Launcher.LaunchUriAsync(mailto);
         }
 
         private void OnAboutClick(object sender, RoutedEventArgs e)
@@ -253,7 +259,7 @@ namespace Pola.View.Pages
 
                 var newMediaCapture = new MediaCapture();
                 await newMediaCapture.InitializeAsync(settings);
-                newMediaCapture.SetPreviewRotation(VideoRotation.Clockwise90Degrees);
+                //newMediaCapture.SetPreviewRotation(VideoRotation.Clockwise90Degrees);
 
                 // Select the capture resolution closest to screen resolution
                 var formats = newMediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview);
@@ -268,15 +274,8 @@ namespace Pola.View.Pages
                 await newMediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
 
                 // Make the preview full screen
-                var scale = Math.Min(this.ActualWidth / format.Height, this.ActualHeight / format.Width);
-                Preview.Width = format.Height;
-                Preview.Height = format.Width;
-                Preview.RenderTransformOrigin = new Point(0.5, 0.5);
-                Preview.RenderTransform = new ScaleTransform
-                {
-                    ScaleX = scale,
-                    ScaleY = scale,
-                };
+                Preview.Width = this.ActualHeight;
+                Preview.Height = this.ActualWidth;
 
                 // Enable QR code detection
                 var definition = new LumiaAnalyzerDefinition(ColorMode.Yuv420Sp, 640, AnalyzeBitmap);
@@ -342,10 +341,10 @@ namespace Pola.View.Pages
             });
         }
 
-        private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,14})$");
+        private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,134})$");
         public static bool IsValidEan(string code)
         {
-            if (!(eanRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12, 13 or 14 digits.
+            if (!(eanRegex.IsMatch(code))) return false; // Check if all digits and with 8, 12 or 13 digits.
             string extendedCode = code.PadLeft(14, '0'); // Stuff zeros at start to garantee 14 digits.
             int[] mult = Enumerable.Range(0, 13).Select(i => ((int)(extendedCode[i] - '0')) * ((i % 2 == 0) ? 3 : 1)).ToArray(); // STEP 1: Without check digit, "Multiply value of each position" by 3 or 1.
             int sum = mult.Sum(); // STEP 2: "Add results together to create sum".

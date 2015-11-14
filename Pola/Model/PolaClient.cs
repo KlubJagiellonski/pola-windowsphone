@@ -19,7 +19,7 @@ namespace Pola.Model
     /// </summary>
     public class PolaClient
     {
-        public const string BaseUrl = @"https://pola-staging.herokuapp.com";
+        public const string BaseUrl = @"https://www.pola-app.pl";
         public static readonly string DeviceId = Settings.DeviceId;
 
         public static async Task<Product> FindProduct(long code)

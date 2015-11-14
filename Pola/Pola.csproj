@@ -90,6 +90,7 @@
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Data\Settings.cs" />
+    <Compile Include="Extensions\ApplicationModeExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="View\Common\ContinousAutoFocus.cs" />
     <Compile Include="Model\Json\Company.cs" />

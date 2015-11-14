@@ -11,10 +11,14 @@
     SizeChanged="OnPageSizeChanged">
 
     <Grid Margin="0, -26.6667">
-        <CaptureElement Name="Preview" 
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Stretch="UniformToFill"/>
+        <Canvas HorizontalAlignment="Right">
+            <CaptureElement Name="Preview" 
+                            Stretch="UniformToFill">
+                <CaptureElement.RenderTransform>
+                    <RotateTransform Angle="90" />
+                </CaptureElement.RenderTransform>
+            </CaptureElement>
+        </Canvas>
         <Canvas x:Name="Overlay" 
                 Width="400"
                 Height="640"
@@ -40,7 +44,8 @@
                    Opacity="1"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
-                   FontFamily="Segoe WP Bold"
+                   FontFamily="Segoe WP"
+                   FontWeight="SemiBold"
                    FontSize="24"
                    Margin="0, 80, 0, 0"/>
         <controls:ProductsListBox x:Name="ProductsListBox" 
@@ -54,11 +59,11 @@
                     Background="{StaticResource PolaRedBrush}">
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="RateButton" 
-                              Label="rate and review" Click="OnRateClick"/>
+                              Label="oceń i opisz" Click="OnRateClick"/>
                 <AppBarButton x:Name="FeedbackButton" 
-                              Label="send feedback" Click="OnFeedbackClick" />
+                              Label="wyślij wiadomość" Click="OnFeedbackClick" />
                 <AppBarButton x:Name="AboutButton" 
-                              Label="about" Click="OnAboutClick" />
+                              Label="informacje" Click="OnAboutClick" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
