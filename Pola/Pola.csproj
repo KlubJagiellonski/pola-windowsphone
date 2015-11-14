@@ -89,6 +89,7 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Data\Settings.cs" />
     <Compile Include="View\Common\ContinousAutoFocus.cs" />
     <Compile Include="Model\Json\Company.cs" />
     <Compile Include="Model\Json\Product.cs" />

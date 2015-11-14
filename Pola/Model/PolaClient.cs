@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Pola.Data;
 using Pola.Model.Json;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Pola.Model
     public class PolaClient
     {
         public const string BaseUrl = @"https://pola-staging.herokuapp.com";
-        public const string DeviceId = @"test";
+        public static readonly string DeviceId = Settings.DeviceId;
 
         public static async Task<Product> FindProduct(long code)
         {
