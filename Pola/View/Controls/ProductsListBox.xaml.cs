@@ -67,8 +67,9 @@ namespace Pola.View.Controls
             productItem.VerticalAlignment = VerticalAlignment.Bottom;
             productItem.Tapped += (sender, e) =>
                 {
+                    if (productItem.Product == null)
+                        return;
                     OnProductSelected(productItem);
-                    //MoveProductItemToTop(productItem);
                 };
 
             double y = -RootGrid.Children.Count * (ProductItem.DefaultHeight + ProductItem.Space);

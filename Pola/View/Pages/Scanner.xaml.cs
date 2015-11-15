@@ -188,7 +188,11 @@ namespace Pola.View.Pages
 
         private void OnProductSelected(object sender, ProductEventArgs e)
         {
-            ProductDetailsPanel.Open((ProductItem)sender);
+            ProductItem productItem = (ProductItem)sender;
+            if (productItem.Product.Company != null)
+                ProductDetailsPanel.Open(productItem);
+            else if (productItem.Product.NeedsReport)
+                Frame.Navigate(typeof(Report));
         }
 
         private void OnHideBarcodeTimerTick(object sender, object e)

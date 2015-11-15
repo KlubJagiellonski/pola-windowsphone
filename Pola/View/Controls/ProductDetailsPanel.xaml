@@ -153,18 +153,20 @@
                                           Value="0"/>
                 <controls:CheckListItem x:Name="PlWorkersCheck" 
                                        Title="Produkuje w Polsce"
-                                       Margin="19, 9.5"/>
+                                       Margin="19, 9.5, 0, 9.5"/>
                 <controls:CheckListItem x:Name="PlRndCheck" 
                                        Title="Prowadzi badania i rozwój w Polsce"
-                                       Margin="19, 9.5"/>
+                                       Margin="19, 9.5, 0, 9.5"/>
                 <controls:CheckListItem x:Name="PlRegisteredCheck" 
                                        Title="Jest zarejestrowana w Polsce"
-                                       Margin="19, 9.5"/>
+                                       Margin="19, 9.5, 0, 9.5"/>
                 <controls:CheckListItem x:Name="PlNotGlobalCheck" 
                                        Title="Nie jest częścią zagranicznego koncernu"
-                                       Margin="19, 9.5"/>
-                <Button Content="zgłoś nowe dane"
+                                       Margin="19, 9.5, 0, 19"/>
+                <Button x:Name="ReportButton" 
+                        Content="zgłoś nowe dane"
                         RequestedTheme="Light"
+                        Visibility="Visible"
                         Margin="19, 9.5" />
             </StackPanel>
         </Grid>

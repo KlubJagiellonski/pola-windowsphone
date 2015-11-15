@@ -99,6 +99,8 @@ namespace Pola.View.Controls
                     ContentGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
                     PlScoreBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
                 }
+
+                ReportButton.Visibility = product.NeedsReport ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
