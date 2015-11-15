@@ -48,7 +48,7 @@ namespace Pola.View.Pages
         {
             Options = new DecodingOptions
             {
-                PossibleFormats = new BarcodeFormat[] { BarcodeFormat.All_1D },
+                PossibleFormats = new BarcodeFormat[] { BarcodeFormat.EAN_8, BarcodeFormat.EAN_13 },
                 TryHarder = true
             }
         };
@@ -201,6 +201,16 @@ namespace Pola.View.Pages
                 });
         }
 
+        private void OnAppBarClosed(object sender, object e)
+        {
+            this.BottomAppBar.Opacity = 0;
+        }
+
+        private void OnAppBarOpened(object sender, object e)
+        {
+            this.BottomAppBar.Opacity = 1;
+        }
+
         #endregion
 
         #region Methods
@@ -331,6 +341,7 @@ namespace Pola.View.Pages
                         Debug.WriteLine(barcode);
                         lastBarcode = barcode;
                         ProductsListBox.AddProduct(barcode);
+                        HintTextBlock.Visibility = Visibility.Collapsed;
                     }
                 }
                 else

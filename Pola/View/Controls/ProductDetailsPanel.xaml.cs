@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pola.Model.Json;
+using Pola.View.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,8 +21,15 @@ namespace Pola.View.Controls
 {
     public sealed partial class ProductDetailsPanel : UserControl
     {
+        #region Fields
+
         private bool isOpen;
         private double openPosition = 400;
+        private Product product;
+
+        #endregion
+
+        #region Properties
 
         public bool IsOpen
         {
@@ -54,10 +63,66 @@ namespace Pola.View.Controls
             }
         }
 
+        public Product Prodcut
+        {
+            get { return product; }
+            set
+            {
+                product = value;
+
+                if (product.Company != null)
+                {
+                    TitleTextBlock.Text = product.Company.Name;
+                    PlWorkersCheck.IsChecked = product.Company.PlWorkers > 0;
+                    PlRndCheck.IsChecked = product.Company.PlRnD > 0;
+                    PlRegisteredCheck.IsChecked = product.Company.PlRegistered > 0;
+                    PlNotGlobalCheck.IsChecked = product.Company.PlNotGlobalEntity > 0;
+                }
+
+                if (product.PlScore != null)
+                    PlScoreBar.Value = (int)product.PlScore;
+                else
+                    PlScoreBar.Value = 0;
+
+                if (product.Company != null && product.Company.PlCapital != null)
+                    PlCapitalBar.Value = (int)product.Company.PlCapital;
+                else
+                    PlCapitalBar.Value = 0;
+
+                if (product.IsVerified)
+                {
+                    ContentGrid.Background = PolaBrushes.ProductVerifiedBackground;
+                    PlScoreBar.Background = PolaBrushes.ProductVerifiedProgressBarBackground;
+                }
+                else
+                {
+                    ContentGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
+                    PlScoreBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Constructor
+
         public ProductDetailsPanel()
         {
             this.InitializeComponent();
         }
+
+        #endregion
+
+        #region Event handlers
+
+        private void DismissLayer_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Close();
+        }
+
+        #endregion
+
+        #region Methods
 
         public void Open()
         {
@@ -75,6 +140,8 @@ namespace Pola.View.Controls
             FadeInSotryboard.Begin();
             isOpen = true;
             ContentGrid.IsHitTestVisible = isOpen;
+            if (productItem.Product != null)
+                this.Prodcut = productItem.Product;
         }
 
         public void Close()
@@ -85,9 +152,6 @@ namespace Pola.View.Controls
             ContentGrid.IsHitTestVisible = isOpen;
         }
 
-        private void DismissLayer_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            Close();
-        }
+        #endregion
     }
 }

@@ -9,6 +9,16 @@ namespace Pola.View.Common
 {
     public static class PolaBrushes
     {
+        public static Brush White
+        {
+            get { return (Brush)App.Current.Resources["WhiteBrush"]; }
+        }
+
+        public static Brush Black
+        {
+            get { return (Brush)App.Current.Resources["BlackBrush"]; }
+        }
+
         public static Brush Red 
         { 
             get { return (Brush)App.Current.Resources["PolaRedBrush"]; } 
@@ -42,6 +52,11 @@ namespace Pola.View.Common
         public static Brush BarcodeFrameStrokeActive
         {
             get { return (Brush)App.Current.Resources["PolaBarcodeFrameActiveStrokeBrush"]; }
+        }
+
+        public static Brush ProgressBarText
+        {
+            get { return (Brush)App.Current.Resources["PolaProgressBarTextBrush"]; }
         }
     }
 }

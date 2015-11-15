@@ -99,6 +99,12 @@
     <Compile Include="Model\PolaClient.cs" />
     <Compile Include="View\Common\PolaBrushes.cs" />
     <Compile Include="View\Common\PolaConstants.cs" />
+    <Compile Include="View\Controls\CheckListItem.xaml.cs">
+      <DependentUpon>CheckListItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\PolaProgressBar.xaml.cs">
+      <DependentUpon>PolaProgressBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Controls\ProductDetailsPanel.xaml.cs">
       <DependentUpon>ProductDetailsPanel.xaml</DependentUpon>
     </Compile>
@@ -143,6 +149,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\Controls\CheckListItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\PolaProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Controls\ProductDetailsPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

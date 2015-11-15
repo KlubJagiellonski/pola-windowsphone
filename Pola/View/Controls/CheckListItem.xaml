@@ -1,0 +1,63 @@
+﻿<UserControl
+    x:Class="Pola.View.Controls.CheckListItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Pola.View.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid Height="26">
+        <Canvas x:Name="Check" 
+                HorizontalAlignment="Left" 
+                Height="26" 
+                UseLayoutRounding="False" 
+                VerticalAlignment="Top" 
+                Width="26">
+            <Ellipse x:Name="CheckBacground" 
+                     Width="26" 
+                     Height="26"
+                     Fill="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
+                     RenderTransformOrigin="0.5, 0.5">
+                <Ellipse.RenderTransform>
+                    <ScaleTransform ScaleX="1"
+                                    ScaleY="1" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Canvas x:Name="CheckSymbol"
+                    Width="26"
+                    Height="26"
+                    RenderTransformOrigin="0.5, 0.5">
+                <Canvas.RenderTransform>
+                    <ScaleTransform ScaleX="1"
+                                    ScaleY="1"/>
+                </Canvas.RenderTransform>
+                <Path x:Name="CheckOn" 
+                      Data="F1M1.146,9.594C1.146,9.594 8.65,18.101 8.65,18.101 8.65,18.101 18.938,4.181 18.938,4.181 18.938,4.181 16.679,1.982 16.679,1.982 16.679,1.982 8.674,12.641 8.674,12.641 8.674,12.641 3.476,7.466 3.476,7.466 3.476,7.466 1.146,9.594 1.146,9.594z" 
+                      Fill="White" 
+                      Height="20" 
+                      Canvas.Left="3" 
+                      Canvas.Top="3" 
+                      Width="20"
+                      Visibility="Collapsed"/>
+                <Path x:Name="CheckOff" 
+                      Data="F1M14.345,1.273C14.345,1.273 16.593,3.521 16.593,3.521 16.593,3.521 14.755,5.359 12.458,7.656L11.181,8.933 12.457,10.209C14.755,12.506 16.593,14.344 16.593,14.344 16.593,14.344 14.345,16.592 14.345,16.592 14.345,16.592 12.507,14.754 10.21,12.457L8.934,11.181 7.658,12.456C5.361,14.753 3.523,16.591 3.523,16.591 3.523,16.591 1.275,14.343 1.275,14.343 1.275,14.343 3.113,12.505 5.41,10.208L6.686,8.932 5.41,7.657C3.113,5.36 1.275,3.522 1.275,3.522 1.275,3.522 3.522,1.274 3.522,1.274 3.522,1.274 5.36,3.112 7.658,5.409L8.933,6.685 10.21,5.408C12.507,3.111,14.345,1.273,14.345,1.273z" 
+                      Fill="White" 
+                      Height="18" 
+                      Canvas.Left="4" 
+                      Canvas.Top="4" 
+                      Width="18"
+                      Visibility="Visible"/>
+            </Canvas>
+        </Canvas>
+        <TextBlock x:Name="TitleTextBlock" 
+                   Foreground="Black"
+                   FontFamily="Segoe WP"
+                   FontSize="16"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="36.1667, 0, 0, 0"/>
+    </Grid>
+</UserControl>

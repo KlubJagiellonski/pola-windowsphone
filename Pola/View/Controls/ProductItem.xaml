@@ -45,17 +45,18 @@
         <Grid x:Name="RootGrid" 
               Margin="19, 0, 19, 9.5" 
               Background="{StaticResource PolaProductNotVerifiedBackgroundBrush}"
-              Height="48">
+              Height="{StaticResource PolaProductItemHeight}">
             <Grid.Projection>
                 <PlaneProjection/>
             </Grid.Projection>
             <TextBlock x:Name="TitleTextBlock"
                        Text="Wyszukiwanie..."
                        Opacity="0.5"
-                       Margin="9.5, 4.75, 0, 4.75"
+                       VerticalAlignment="Top"
+                       Margin="9.5, 4.75, 0, 9.5"
                        Foreground="Black" 
-                       FontFamily="Segoe WP Semilight"
-                       FontSize="24"/>
+                       FontFamily="Segoe WP"
+                       FontSize="20"/>
             <ProgressBar x:Name="ProgressBar" 
                          IsIndeterminate="True"
                          Foreground="{StaticResource PolaRedBrush}"

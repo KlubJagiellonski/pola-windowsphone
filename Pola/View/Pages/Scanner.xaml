@@ -8,7 +8,8 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
     NavigationCacheMode="Required" 
-    SizeChanged="OnPageSizeChanged">
+    SizeChanged="OnPageSizeChanged"
+      IsTextScaleFactorEnabled="False" >
 
     <Grid Margin="0, -26.6667">
         <Canvas HorizontalAlignment="Right">
@@ -48,6 +49,17 @@
                    FontWeight="SemiBold"
                    FontSize="24"
                    Margin="0, 80, 0, 0"/>
+        <TextBlock x:Name="HintTextBlock" 
+                   Text="Umieść kod kreskowy produktu w&#160;prostokącie powyżej, aby dowiedzieć się czegoś więcej o&#160;firmie, która go wyprodukowała." 
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Center"
+                   TextWrapping="Wrap"
+                   TextAlignment="Center"
+                   Foreground="White"
+                   FontFamily="Segoe WP"
+                   FontWeight="SemiBold"
+                   FontSize="18"
+                   Margin="28.5, 57"/>
         <controls:ProductsListBox x:Name="ProductsListBox" 
                                   Margin="0, 26.6667" 
                                   ProductSelected="OnProductSelected"/>
@@ -56,7 +68,10 @@
     </Grid>
     <Page.BottomAppBar>
         <CommandBar Foreground="White"
-                    Background="{StaticResource PolaRedBrush}">
+                    Opacity="0"
+                    Background="Black" 
+                    Closed="OnAppBarClosed" 
+                    Opened="OnAppBarOpened">
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="RateButton" 
                               Label="oceń i opisz" Click="OnRateClick"/>
