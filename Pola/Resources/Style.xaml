@@ -23,6 +23,7 @@
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <x:String x:Key="ProgressBarIndeterminateForegroundThemeBrush">#d8152f</x:String>
+            <SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="{StaticResource PolaRedColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

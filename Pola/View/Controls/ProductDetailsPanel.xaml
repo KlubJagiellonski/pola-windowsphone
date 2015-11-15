@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="400"
+    d:DesignHeight="500"
     d:DesignWidth="400">
     <UserControl.RenderTransform>
         <TranslateTransform/>
@@ -120,8 +120,8 @@
         <Grid x:Name="ContentGrid" 
               Background="White"
               Margin="9.5"
-              Height="400"
-              RenderTransformOrigin="0.5, 0.5">
+              RenderTransformOrigin="0.5, 0.5"
+              VerticalAlignment="Center">
             <Grid.RenderTransform>
                 <CompositeTransform ScaleX="1"
                                     ScaleY="1"
@@ -140,29 +140,32 @@
                                           Background="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
                                           Value="0"
                                           Height="26.6667"/>
-                <TextBlock Text="Odsetek polskich właścieli" 
+                <TextBlock Text="Udział polskiego kapitału" 
                            Foreground="Black"
                            FontFamily="Segoe WP"
                            FontSize="16"
-                           Margin="9.5, 9.5, 0, 2.5"/>
+                           Margin="19, 9.5, 0, 2.5"/>
                 <controls:PolaProgressBar x:Name="PlCapitalBar"
-                                          Margin="9.5, 0, 9.5, 9.5"
+                                          Margin="19, 0, 19, 9.5"
                                           Background="#11000000"
                                           Foreground="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
                                           Height="22.3333"
                                           Value="0"/>
                 <controls:CheckListItem x:Name="PlWorkersCheck" 
                                        Title="Produkuje w Polsce"
-                                       Margin="9.5"/>
+                                       Margin="19, 9.5"/>
                 <controls:CheckListItem x:Name="PlRndCheck" 
-                                       Title="Tworzy wysokopłatne miejsca pracy w Polsce"
-                                       Margin="9.5"/>
+                                       Title="Prowadzi badania i rozwój w Polsce"
+                                       Margin="19, 9.5"/>
                 <controls:CheckListItem x:Name="PlRegisteredCheck" 
                                        Title="Jest zarejestrowana w Polsce"
-                                       Margin="9.5"/>
+                                       Margin="19, 9.5"/>
                 <controls:CheckListItem x:Name="PlNotGlobalCheck" 
-                                       Title="Nie jest częścią globalnego koncernu"
-                                       Margin="9.5"/>
+                                       Title="Nie jest częścią zagranicznego koncernu"
+                                       Margin="19, 9.5"/>
+                <Button Content="zgłoś nowe dane"
+                        RequestedTheme="Light"
+                        Margin="19, 9.5" />
             </StackPanel>
         </Grid>
     </Grid>
