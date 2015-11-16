@@ -18,30 +18,50 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Pola.View.Controls
 {
+    public enum CheckListItemState
+    {
+        On,
+        Off,
+        Unknown,
+    }
+
     public sealed partial class CheckListItem : UserControl
     {
         /// <summary>
         /// Gets or sets whether the check is checked.
         /// </summary>
-        public bool IsChecked
+        public CheckListItemState CheckState
         {
             get
-            { 
-                return CheckOn.Visibility == Visibility.Visible; 
+            {
+                if (CheckOn.IsVisible())
+                    return CheckListItemState.On;
+                if (CheckOff.IsVisible())
+                    return CheckListItemState.Off;
+                return CheckListItemState.Unknown;
             }
 
             set
             {
-                if (value)
+                if (value == CheckListItemState.On)
                 {
                     CheckOn.Visibility = Visibility.Visible;
                     CheckOff.Visibility = Visibility.Collapsed;
+                    CheckUnknown.Visibility = Visibility.Collapsed;
                     CheckBacground.Fill = PolaBrushes.Red;
+                }
+                else if (value == CheckListItemState.Off)
+                {
+                    CheckOn.Visibility = Visibility.Collapsed;
+                    CheckOff.Visibility = Visibility.Visible;
+                    CheckUnknown.Visibility = Visibility.Collapsed;
+                    CheckBacground.Fill = PolaBrushes.ProductVerifiedProgressBarBackground;
                 }
                 else
                 {
                     CheckOn.Visibility = Visibility.Collapsed;
-                    CheckOff.Visibility = Visibility.Visible;
+                    CheckOff.Visibility = Visibility.Collapsed;
+                    CheckUnknown.Visibility = Visibility.Visible;
                     CheckBacground.Fill = PolaBrushes.ProductVerifiedProgressBarBackground;
                 }
             }

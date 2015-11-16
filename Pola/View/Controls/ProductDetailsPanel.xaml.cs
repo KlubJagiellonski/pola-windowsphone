@@ -73,21 +73,26 @@ namespace Pola.View.Controls
                 if (product.Company != null)
                 {
                     TitleTextBlock.Text = product.Company.Name;
-                    PlWorkersCheck.IsChecked = product.Company.PlWorkers > 0;
-                    PlRndCheck.IsChecked = product.Company.PlRnD > 0;
-                    PlRegisteredCheck.IsChecked = product.Company.PlRegistered > 0;
-                    PlNotGlobalCheck.IsChecked = product.Company.PlNotGlobalEntity > 0;
+                    PlWorkersCheck.CheckState = CheckStateFromNullableInt(product.Company.PlWorkers);
+                    PlRndCheck.CheckState = CheckStateFromNullableInt(product.Company.PlRnD);
+                    PlRegisteredCheck.CheckState = CheckStateFromNullableInt(product.Company.PlRegistered);
+                    PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.Company.PlNotGlobalEntity);
                 }
 
-                if (product.PlScore != null)
-                    PlScoreBar.Value = (int)product.PlScore;
-                else
-                    PlScoreBar.Value = 0;
+                PlScoreBar.Value = product.PlScore ?? 0;
+                PlScoreBar.IsUnknown = product.PlScore == null;
 
-                if (product.Company != null && product.Company.PlCapital != null)
-                    PlCapitalBar.Value = (int)product.Company.PlCapital;
+
+                if (product.Company != null)
+                {
+                    PlCapitalBar.Value = product.Company.PlCapital ?? 0;
+                    PlCapitalBar.IsUnknown = product.Company.PlCapital == null;
+                }
                 else
+                {
                     PlCapitalBar.Value = 0;
+                    PlCapitalBar.IsUnknown = true;
+                }
 
                 if (product.IsVerified)
                 {
@@ -99,8 +104,6 @@ namespace Pola.View.Controls
                     ContentGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
                     PlScoreBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
                 }
-
-                ReportButton.Visibility = product.NeedsReport ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -152,6 +155,15 @@ namespace Pola.View.Controls
             FadeOutSotryboard.Begin();
             isOpen = false;
             ContentGrid.IsHitTestVisible = isOpen;
+        }
+
+        private static CheckListItemState CheckStateFromNullableInt(int? value)
+        {
+            if (value == null)
+                return CheckListItemState.Unknown;
+            if (value == 0)
+                return CheckListItemState.Off;
+            return CheckListItemState.On;
         }
 
         #endregion

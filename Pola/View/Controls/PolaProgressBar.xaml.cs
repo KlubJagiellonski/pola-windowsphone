@@ -48,7 +48,6 @@ namespace Pola.View.Controls
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ProgressBar b;
             PolaProgressBar progressBar = (PolaProgressBar)d;
             int value = (int)e.NewValue;
             if (value > Max)
@@ -58,6 +57,28 @@ namespace Pola.View.Controls
 
             progressBar.ProgressBarForeground.Width = progressBar.ActualWidth * value / (Max - Min);
             progressBar.ProgressBarTextBlock.Text = string.Format("{0}%", value);
+        }
+
+        #endregion
+
+        #region IsUnknown
+
+        public bool IsUnknown
+        {
+            get { return (bool)GetValue(IsUnknownProperty); }
+            set { SetValue(IsUnknownProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsUnknownProperty =
+            DependencyProperty.Register("IsUnknown", typeof(bool), typeof(PolaProgressBar), new PropertyMetadata(false, OnIsUnknownChanged));
+
+        private static void OnIsUnknownChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            PolaProgressBar progressBar = (PolaProgressBar)d;
+            if ((bool)e.NewValue)
+                progressBar.ProgressBarTextBlock.Text = string.Empty;
+            else
+                progressBar.ProgressBarTextBlock.Text = string.Format("{0}%", progressBar.Value);
         }
 
         #endregion

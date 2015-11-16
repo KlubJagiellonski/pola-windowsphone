@@ -19,7 +19,7 @@ namespace Pola.Model.Json
         [JsonProperty("report")]
         public object ReportObject { get; set; }
 
-        public bool NeedsReport
+        public bool AskForReport
         {
             get
             {

@@ -168,7 +168,7 @@ namespace Pola.View.Pages
         private void OnRateClick(object sender, RoutedEventArgs e)
         {
             string appid = Windows.ApplicationModel.Package.Current.Id.Name;
-            var ignore = Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + appid)); 
+            var ignore = Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + appid));
         }
 
         private void OnFeedbackClick(object sender, RoutedEventArgs e)
@@ -191,7 +191,7 @@ namespace Pola.View.Pages
             ProductItem productItem = (ProductItem)sender;
             if (productItem.Product.Company != null)
                 ProductDetailsPanel.Open(productItem);
-            else if (productItem.Product.NeedsReport)
+            else if (productItem.Product.AskForReport)
                 Frame.Navigate(typeof(Report));
         }
 
@@ -315,6 +315,8 @@ namespace Pola.View.Pages
 
         private void AnalyzeBitmap(Bitmap bitmap, TimeSpan time)
         {
+            if (ProductDetailsPanel.IsOpen)
+                return;
             Log.Events.QrCodeDecodeStart();
 
             Result result = barcodeReader.Decode(

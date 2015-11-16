@@ -92,6 +92,7 @@
     <Compile Include="Data\Settings.cs" />
     <Compile Include="Extensions\ApplicationModeExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
+    <Compile Include="Extensions\XamlExtensions.cs" />
     <Compile Include="View\Common\ContinousAutoFocus.cs" />
     <Compile Include="Model\Json\Company.cs" />
     <Compile Include="Model\Json\Product.cs" />

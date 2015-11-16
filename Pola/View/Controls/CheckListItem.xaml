@@ -34,6 +34,15 @@
                     <ScaleTransform ScaleX="1"
                                     ScaleY="1"/>
                 </Canvas.RenderTransform>
+                <TextBlock x:Name="CheckUnknown"
+                           Text="?"
+                           Foreground="White"
+                           FontFamily="Segoe WP"
+                           FontWeight="SemiBold"
+                           FontSize="27"
+                           Width="26"
+                           TextAlignment="Center"
+                           Margin="0, -6.7, 0, 0"/>
                 <Path x:Name="CheckOn" 
                       Data="F1M1.146,9.594C1.146,9.594 8.65,18.101 8.65,18.101 8.65,18.101 18.938,4.181 18.938,4.181 18.938,4.181 16.679,1.982 16.679,1.982 16.679,1.982 8.674,12.641 8.674,12.641 8.674,12.641 3.476,7.466 3.476,7.466 3.476,7.466 1.146,9.594 1.146,9.594z" 
                       Fill="White" 
@@ -49,7 +58,7 @@
                       Canvas.Left="4" 
                       Canvas.Top="4" 
                       Width="18"
-                      Visibility="Visible"/>
+                      Visibility="Collapsed"/>
             </Canvas>
         </Canvas>
         <TextBlock x:Name="TitleTextBlock" 
