@@ -116,7 +116,7 @@
         <Grid x:Name="DismissLayer"
               Background="Black"
               Opacity="0.8"
-              Tapped="DismissLayer_Tapped"/>
+              Tapped="OnDismissTapped"/>
         <Grid x:Name="ContentGrid" 
               Background="White"
               Margin="9.5"
@@ -166,8 +166,7 @@
                 <Button x:Name="ReportButton" 
                         Content="zgłoś nowe dane"
                         RequestedTheme="Light"
-                        Visibility="Visible"
-                        Margin="19, 9.5" />
+                        Margin="19, 9.5" Click="OnReportClick" />
             </StackPanel>
         </Grid>
     </Grid>

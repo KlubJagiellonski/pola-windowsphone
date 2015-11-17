@@ -191,7 +191,7 @@ namespace Pola.View.Pages
             ProductItem productItem = (ProductItem)sender;
             if (productItem.Product.Company != null)
                 ProductDetailsPanel.Open(productItem);
-            else if (productItem.Product.AskForReport)
+            else
                 Frame.Navigate(typeof(Report));
         }
 
@@ -416,5 +416,10 @@ namespace Pola.View.Pages
         }
 
         #endregion
+
+        private void OnProductReport(object sender, ProductEventArgs e)
+        {
+            Frame.Navigate(typeof(Report));
+        }
     }
 }

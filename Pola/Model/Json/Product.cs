@@ -16,23 +16,6 @@ namespace Pola.Model.Json
         [JsonProperty("plScore")]
         public int? PlScore { get; set; }
 
-        [JsonProperty("report")]
-        public object ReportObject { get; set; }
-
-        public bool AskForReport
-        {
-            get
-            {
-                if (ReportObject == null)
-                    return false;
-                if (ReportObject is bool)
-                    return (bool)ReportObject;
-                if (ReportObject is string && ((string)ReportObject).Equals("ask_for_company"))
-                    return true;
-                return false;
-            }
-        }
-
         [JsonProperty("code")]
         public long Code { get; set; }
     }

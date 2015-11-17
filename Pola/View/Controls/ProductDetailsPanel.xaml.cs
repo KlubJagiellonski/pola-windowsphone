@@ -109,6 +109,17 @@ namespace Pola.View.Controls
 
         #endregion
 
+        #region Events
+
+        public event EventHandler<ProductEventArgs> Report;
+        protected void OnReport()
+        {
+            if (Report != null)
+                Report(this, new ProductEventArgs(product));
+        }
+
+        #endregion
+
         #region Constructor
 
         public ProductDetailsPanel()
@@ -120,9 +131,14 @@ namespace Pola.View.Controls
 
         #region Event handlers
 
-        private void DismissLayer_Tapped(object sender, TappedRoutedEventArgs e)
+        private void OnDismissTapped(object sender, TappedRoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnReportClick(object sender, RoutedEventArgs e)
+        {
+            OnReport();
         }
 
         #endregion

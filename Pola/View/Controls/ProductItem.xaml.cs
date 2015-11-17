@@ -151,7 +151,7 @@ namespace Pola.View.Controls
                 }
                 else
                 {
-                    if (!product.IsVerified && product.AskForReport)
+                    if (!product.IsVerified)
                     {
                         TitleTextBlock.Opacity = 1;
                         TitleTextBlock.Text = "Pomóż Poli zdobyć dane";

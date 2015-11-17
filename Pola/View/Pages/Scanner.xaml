@@ -64,7 +64,8 @@
                                   Margin="0, 26.6667" 
                                   ProductSelected="OnProductSelected"/>
         <controls:ProductDetailsPanel x:Name="ProductDetailsPanel"
-                                      IsOpen="False"/>
+                                      IsOpen="False" 
+                                      Report="OnProductReport"/>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar Foreground="White"
