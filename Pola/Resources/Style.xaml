@@ -14,11 +14,17 @@
     <SolidColorBrush x:Key="PolaBarcodeFrameStrokeBrush" Color="#80ffffff" />
     <SolidColorBrush x:Key="PolaBarcodeFrameActiveStrokeBrush" Color="White" />
     <SolidColorBrush x:Key="PolaProgressBarTextBrush" Color="#3f3f3f" />
-    
+
     <x:Double x:Key="PolaProductItemHeight">45</x:Double>
     <x:Double x:Key="PolaProductItemSpace">9.5</x:Double>
     <x:Double x:Key="PolaBarcodeFrameThickness">1</x:Double>
     <x:Double x:Key="PolaBarcodeFrameActiveThickness">2</x:Double>
+    <Style x:Key="LinkTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource ContentControlFontSize}" />
+        <Setter Property="FontFamily" Value="Segoe WP"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Margin" Value="0, 5" />
+    </Style>
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Pola.View.Pages"
+    xmlns:controls="using:Pola.View.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -23,15 +24,106 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Title Panel -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="POLA" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="about" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <TextBlock Text="POLA" 
+                       Style="{ThemeResource TitleTextBlockStyle}" 
+                       Margin="0,12,0,0"/>
+            <TextBlock Text="informacje" 
+                       Margin="0,-6.5,0,26.5" 
+                       Style="{ThemeResource HeaderTextBlockStyle}" 
+                       CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
-        <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="19, 0, 19, 38">
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition FromHorizontalOffset="40" 
+                                                 FromVerticalOffset="0" />
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
+                <Grid Margin="0, 0, 0, 19">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="ms-appx:///Assets/AboutLogo.png"
+                           Height="80"
+                           Width="80"/>
+                    <StackPanel Grid.Column="1"
+                                Margin="9.5, 0, 0, 0">
+                        <TextBlock Text="Pola. Zabierz ją na zakupy"
+                                   FontFamily="Segoe WP"
+                                   FontSize="24"/>
+                        <TextBlock x:Name="VersionTextBlock" 
+                                   Text="1.0.0.0"
+                                   FontFamily="Segoe WP"
+                                   Foreground="Gray"/>
+                    </StackPanel>
+                </Grid>
+                
+                <TextBlock Style="{StaticResource SubheaderTextBlockStyle}"
+                           Text="Szczegóły"
+                           Margin="0, 9.5"
+                           Foreground="{StaticResource PolaRedBrush}"/>
 
-        </Grid>
+                <HyperlinkButton NavigateUri="http://www.pola-app.pl/m/about" >
+                    <TextBlock Style="{StaticResource LinkTextBlockStyle}">
+                        <Underline>O aplikacji</Underline>
+                    </TextBlock>
+                </HyperlinkButton>
+                
+                <HyperlinkButton NavigateUri="http://www.pola-app.pl/m/method" >
+                    <TextBlock Style="{StaticResource LinkTextBlockStyle}">
+                        <Underline>Instrukcja obsługi</Underline>
+                    </TextBlock>
+                </HyperlinkButton>
+
+                <HyperlinkButton NavigateUri="http://www.pola-app.pl/m/kj" >
+                    <TextBlock Style="{StaticResource LinkTextBlockStyle}">
+                        <Underline>O Klubie Jagiellońskim</Underline>
+                    </TextBlock>
+                </HyperlinkButton>
+
+                <HyperlinkButton NavigateUri="http://www.pola-app.pl/m/team" >
+                    <TextBlock Style="{StaticResource LinkTextBlockStyle}">
+                        <Underline>Zespół</Underline>
+                    </TextBlock>
+                </HyperlinkButton>
+
+                <HyperlinkButton NavigateUri="http://www.pola-app.pl/m/partners" >
+                    <TextBlock Style="{StaticResource LinkTextBlockStyle}">
+                        <Underline>Partnerzy</Underline>
+                    </TextBlock>
+                </HyperlinkButton>
+
+                <TextBlock Style="{StaticResource SubheaderTextBlockStyle}"
+                           Text="Kontakt"
+                           Margin="0, 9.5"
+                           Foreground="{StaticResource PolaRedBrush}"/>
+
+                <Button Content="zgłoś błąd danych" Click="OnReportClick" />
+                <Button Content="napisz do nas" Click="OnFeedbackClick" />
+                <Button Content="oceń i opisz" Click="OnRateClick"/>
+
+                <TextBlock Style="{StaticResource SubheaderTextBlockStyle}"
+                           Text="Media społecznościowe"
+                           Margin="0, 9.5"
+                           Foreground="{StaticResource PolaRedBrush}"/>
+
+                <ListViewItem Tapped="OnFacebookTapped">
+                    <controls:IconLink Text="Facebook"
+                                       Description="Pola. Zabierz ją na zakupy" 
+                                       ImageSource="ms-appx:///Assets/Facebook.png" />
+                </ListViewItem>
+
+                <ListViewItem Tapped="OnTwitterTapped">
+                    <controls:IconLink Text="Twitter"
+                                       Description="@pola_app   " 
+                                       ImageSource="ms-appx:///Assets/Twitter.png" />
+                </ListViewItem>
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

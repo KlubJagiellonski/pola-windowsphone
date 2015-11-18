@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -49,8 +51,8 @@ namespace Pola.View.Pages
         public About()
         {
             this.InitializeComponent();
-
             this.navigationHelper = new NavigationHelper(this);
+            this.VersionTextBlock.Text = Package.Current.Id.Version.ToVersion().ToString();
         }
 
         #endregion
@@ -81,6 +83,16 @@ namespace Pola.View.Pages
             this.navigationHelper.OnNavigatedFrom(e);
         }
 
+        private async void OnFacebookTapped(object sender, TappedRoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("fb:pages?id=1497031433925482"));
+        }
+
+        private async void OnTwitterTapped(object sender, TappedRoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://twitter.com/pola_app"));
+        }
+
         #endregion
 
         #region Methods
@@ -95,5 +107,26 @@ namespace Pola.View.Pages
         }
 
         #endregion
+
+        private void OnReportClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Report));
+        }
+
+        private void OnFeedbackClick(object sender, RoutedEventArgs e)
+        {
+            string version = Package.Current.Id.Version.ToVersion().ToString();
+            string email = "kontakt@pola-app.pl";
+            string subject = string.Format("Pola {0}, Windows Phone", version);
+            string body = "";
+            Uri mailto = new Uri(string.Format("mailto:?to={0}&subject={1}&body={2}", email, subject, body));
+            var ignore = Launcher.LaunchUriAsync(mailto);
+        }
+
+        private void OnRateClick(object sender, RoutedEventArgs e)
+        {
+            string appid = Windows.ApplicationModel.Package.Current.Id.Name;
+            var ignore = Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + appid));
+        }
     }
 }

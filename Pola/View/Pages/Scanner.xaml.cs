@@ -215,6 +215,11 @@ namespace Pola.View.Pages
             this.BottomAppBar.Opacity = 1;
         }
 
+        private void OnProductReport(object sender, ProductEventArgs e)
+        {
+            Frame.Navigate(typeof(Report));
+        }
+
         #endregion
 
         #region Methods
@@ -416,10 +421,5 @@ namespace Pola.View.Pages
         }
 
         #endregion
-
-        private void OnProductReport(object sender, ProductEventArgs e)
-        {
-            Frame.Navigate(typeof(Report));
-        }
     }
 }
