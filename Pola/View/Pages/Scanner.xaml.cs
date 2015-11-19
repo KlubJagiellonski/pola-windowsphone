@@ -252,7 +252,6 @@ namespace Pola.View.Pages
             double scaleX = this.ActualWidth / Overlay.ActualWidth;
             double scaleY = this.ActualHeight / Overlay.ActualHeight;
 
-            Overlay.RenderTransformOrigin = new Point(0.5, 0.5);
             Overlay.RenderTransform = new ScaleTransform()
             {
                 ScaleX = scaleX,
