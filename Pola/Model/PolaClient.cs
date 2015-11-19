@@ -34,26 +34,28 @@ namespace Pola.Model
         /// <returns>Product details.</returns>
         public static async Task<Product> FindProduct(string barcode)
         {
-            string requestUri = string.Format("{0}/a/get_by_code/{1}?device_id={2}", BaseUrl, barcode, DeviceId);
-            Debug.WriteLine(requestUri);
-            WebRequest productRequest = WebRequest.Create(requestUri);
-            using (WebResponse productResponse = await productRequest.GetResponseAsync())
-            using (StreamReader productReader = new StreamReader(productResponse.GetResponseStream()))
+            try
             {
-                try
+                string requestUri = string.Format("{0}/a/get_by_code/{1}?device_id={2}", BaseUrl, barcode, DeviceId);
+                Debug.WriteLine(requestUri);
+                WebRequest productRequest = WebRequest.Create(requestUri);
+                using (WebResponse productResponse = await productRequest.GetResponseAsync())
+                using (StreamReader productReader = new StreamReader(productResponse.GetResponseStream()))
                 {
+
                     string productString = productReader.ReadToEnd();
                     Product product = JsonConvert.DeserializeObject<Product>(productString);
-                    
+
 #if DEBUG
                     Debug.WriteLine(JsonConvert.SerializeObject(product, Formatting.Indented));
 #endif
                     return product;
+
                 }
-                catch
-                {
-                    return null;
-                }
+            }
+            catch
+            {
+                return null;
             }
         }
     }

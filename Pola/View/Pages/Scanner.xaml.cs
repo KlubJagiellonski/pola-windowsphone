@@ -291,7 +291,7 @@ namespace Pola.View.Pages
 
                 await newMediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
 
-                //newMediaCapture.VideoDeviceController.FlashControl.Enabled = false;
+                newMediaCapture.VideoDeviceController.FlashControl.Enabled = false;
 
                 // Make the preview full screen
                 Preview.Width = this.ActualHeight;
@@ -323,16 +323,12 @@ namespace Pola.View.Pages
         {
             if (ProductDetailsPanel.IsOpen)
                 return;
-            Log.Events.QrCodeDecodeStart();
 
             Result result = barcodeReader.Decode(
                 bitmap.Buffers[0].Buffer.ToArray(),
                 (int)bitmap.Buffers[0].Pitch, // Should be width here but I haven't found a way to pass both width and stride to ZXing yet
                 (int)bitmap.Dimensions.Height,
-                BitmapFormat.Gray8
-                );
-
-            Log.Events.QrCodeDecodeStop(result != null);
+                BitmapFormat.Gray8);
 
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {

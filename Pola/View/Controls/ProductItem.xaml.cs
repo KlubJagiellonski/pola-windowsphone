@@ -39,6 +39,7 @@ namespace Pola.View.Controls
 
         private string barcode;
         private Product product;
+        private double? targetY = null;
 
         #endregion
 
@@ -192,12 +193,15 @@ namespace Pola.View.Controls
 
         private void Slide(double offset)
         {
+            if (targetY == null)
+                targetY = Translation.Y;
+            targetY += offset;
+
             Storyboard storyboard = new Storyboard();
 
             DoubleAnimation translateAnimation = new DoubleAnimation()
             {
-                From = Translation.Y,
-                To = Translation.Y + offset,
+                To = targetY,
                 Duration = new Duration(TimeSpan.FromSeconds(0.5)),
                 EasingFunction = new QuarticEase()
                 {

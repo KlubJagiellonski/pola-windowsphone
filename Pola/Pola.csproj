@@ -129,7 +129,6 @@
       <DependentUpon>Scanner.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\Common\QrCodeDetectorEventSource.cs" />
     <Compile Include="View\Pages\Start.xaml.cs">
       <DependentUpon>Start.xaml</DependentUpon>
     </Compile>
