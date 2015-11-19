@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="d456238b-9851-48b4-b916-bf64bec388dc" Publisher="CN=Luke" Version="0.1.0.1" />
-  <mp:PhoneIdentity PhoneProductId="d456238b-9851-48b4-b916-bf64bec388dc" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="KlubJagiellonski.Pola" Publisher="CN=B407B029-B06B-47D3-BA51-AA37FC08C960" Version="0.1.0.0" />
+  <mp:PhoneIdentity PhoneProductId="fb9ea768-8448-42cc-ac4e-9c43ec0f54f7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Pola</DisplayName>
-    <PublisherDisplayName>Łukasz Rejman</PublisherDisplayName>
+    <PublisherDisplayName>Klub Jagiellonski</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
