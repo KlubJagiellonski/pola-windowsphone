@@ -278,7 +278,6 @@ namespace Pola.View.Pages
 
                 var newMediaCapture = new MediaCapture();
                 await newMediaCapture.InitializeAsync(settings);
-                //newMediaCapture.SetPreviewRotation(VideoRotation.Clockwise90Degrees);
 
                 // Select the capture resolution closest to screen resolution
                 var formats = newMediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview);
@@ -291,6 +290,8 @@ namespace Pola.View.Pages
                 Debug.WriteLine("{0} x {1}", format.Width, format.Height);
 
                 await newMediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
+
+                //newMediaCapture.VideoDeviceController.FlashControl.Enabled = false;
 
                 // Make the preview full screen
                 Preview.Width = this.ActualHeight;

@@ -154,7 +154,7 @@ namespace Pola.View.Controls
                     if (!product.IsVerified)
                     {
                         TitleTextBlock.Opacity = 1;
-                        TitleTextBlock.Text = "Pomóż Poli zdobyć dane";
+                        TitleTextBlock.Text = "Nieznany produkt (dotknij, aby zgłosić)";
                     }
                     else
                     {
