@@ -51,7 +51,7 @@
                            Height="80"
                            Width="80"/>
                     <StackPanel Grid.Column="1"
-                                Margin="9.5, 0, 0, 0">
+                                Margin="9.5, 0, -19, 0">
                         <TextBlock Text="Pola. Zabierz ją na zakupy"
                                    FontFamily="Segoe WP"
                                    FontSize="24"/>
