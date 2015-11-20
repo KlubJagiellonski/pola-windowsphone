@@ -15,6 +15,7 @@ using Windows.Foundation;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Phone.UI.Input;
+using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Display;
 using Windows.UI;
@@ -23,6 +24,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using ZXing;
 using ZXing.Common;
@@ -58,6 +60,8 @@ namespace Pola.View.Pages
         {
             Interval = TimeSpan.FromSeconds(1.5),
         };
+
+        private WriteableBitmap bitmapWithBarcode;
 
         #endregion
 
@@ -167,8 +171,7 @@ namespace Pola.View.Pages
 
         private void OnRateClick(object sender, RoutedEventArgs e)
         {
-            string appid = Windows.ApplicationModel.Package.Current.Id.Name;
-            var ignore = Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + appid));
+            var ignore = Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=1b189a4d-2f48-4f99-a3be-72623e7f711f"));
         }
 
         private void OnFeedbackClick(object sender, RoutedEventArgs e)
@@ -215,9 +218,9 @@ namespace Pola.View.Pages
             this.BottomAppBar.Opacity = 1;
         }
 
-        private void OnProductReport(object sender, ProductEventArgs e)
+        private void OnProductReport(object sender, ReportEventArgs e)
         {
-            Frame.Navigate(typeof(Report));
+            Frame.Navigate(typeof(Report), e);
         }
 
         #endregion
@@ -292,6 +295,9 @@ namespace Pola.View.Pages
 
                 newMediaCapture.VideoDeviceController.FlashControl.Enabled = false;
 
+                // Prepare bitmap for reports
+                bitmapWithBarcode = new WriteableBitmap((int)format.Width, (int)format.Height);
+
                 // Make the preview full screen
                 Preview.Width = this.ActualHeight;
                 Preview.Height = this.ActualWidth;
@@ -329,34 +335,47 @@ namespace Pola.View.Pages
                 (int)bitmap.Dimensions.Height,
                 BitmapFormat.Gray8);
 
-            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                if (result != null && IsValidEan(result.Text))
-                {
-                    if (autoFocus != null)
-                        autoFocus.BarcodeFound = true;
 
-                    string barcode = result.Text;
+
+
+            if (result != null && IsValidEan(result.Text))
+            {
+                if (autoFocus != null)
+                    autoFocus.BarcodeFound = true;
+
+                string barcode = result.Text;
+
+                var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                {
                     BarcodeTextBlock.Text = barcode.ToEanString();
                     BarcodeTextBlock.Opacity = 1;
                     BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStrokeActive;
                     BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameActiveThickness;
                     hideBarcodeTimer.Start();
+                });
 
-                    if (lastBarcode != barcode)
-                    {
-                        Debug.WriteLine(barcode);
-                        lastBarcode = barcode;
-                        ProductsListBox.AddProduct(barcode);
-                        HintTextBlock.Visibility = Visibility.Collapsed;
-                    }
-                }
-                else
+                if (lastBarcode != barcode)
                 {
-                    if (autoFocus != null)
-                        autoFocus.BarcodeFound = false;
+                    Debug.WriteLine(barcode);
+                    lastBarcode = barcode;
+
+                    BitmapImageSource bmpImgSrc = new BitmapImageSource(bitmap);
+                    WriteableBitmapRenderer renderer = new WriteableBitmapRenderer(bmpImgSrc, bitmapWithBarcode);
+                    bitmapWithBarcode = renderer.RenderAsync().AsTask().Result;
+
+                    ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        ProductsListBox.AddProduct(barcode, bitmapWithBarcode);
+                        HintTextBlock.Visibility = Visibility.Collapsed;
+                    });
                 }
-            });
+            }
+            else
+            {
+                if (autoFocus != null)
+                    autoFocus.BarcodeFound = false;
+            }
+
         }
 
         private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,134})$");

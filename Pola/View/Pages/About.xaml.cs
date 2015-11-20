@@ -125,8 +125,7 @@ namespace Pola.View.Pages
 
         private void OnRateClick(object sender, RoutedEventArgs e)
         {
-            string appid = Windows.ApplicationModel.Package.Current.Id.Name;
-            var ignore = Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + appid));
+            var ignore = Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=1b189a4d-2f48-4f99-a3be-72623e7f711f"));
         }
     }
 }

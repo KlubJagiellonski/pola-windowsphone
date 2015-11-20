@@ -1,4 +1,5 @@
-﻿using Pola.Model.Json;
+﻿using Lumia.Imaging;
+using Pola.Model.Json;
 using Pola.View.Common;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -31,6 +33,9 @@ namespace Pola.View.Controls
 
         #region Properties
 
+        /// <summary>
+        /// Changes the visual state of the panel without animation.
+        /// </summary>
         public bool IsOpen
         {
             get
@@ -63,7 +68,10 @@ namespace Pola.View.Controls
             }
         }
 
-        public Product Prodcut
+        /// <summary>
+        /// Gets or sets an object that contains all the downloaded info about the product for scanned barcode.
+        /// </summary>
+        public Product Product
         {
             get { return product; }
             set
@@ -107,15 +115,20 @@ namespace Pola.View.Controls
             }
         }
 
+        /// <summary>
+        /// Gets a bitmap object that contains an image with the scanned barcode.
+        /// </summary>
+        public WriteableBitmap Bitmap { get; private set; }
+
         #endregion
 
         #region Events
 
-        public event EventHandler<ProductEventArgs> Report;
+        public event EventHandler<ReportEventArgs> Report;
         protected void OnReport()
         {
             if (Report != null)
-                Report(this, new ProductEventArgs(product));
+                Report(this, new ReportEventArgs(product, Bitmap));
         }
 
         #endregion
@@ -162,7 +175,10 @@ namespace Pola.View.Controls
             isOpen = true;
             ContentGrid.IsHitTestVisible = isOpen;
             if (productItem.Product != null)
-                this.Prodcut = productItem.Product;
+            {
+                this.Product = productItem.Product;
+                this.Bitmap = productItem.Bitmap;
+            }
         }
 
         public void Close()

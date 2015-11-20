@@ -101,6 +101,7 @@
     <Compile Include="Model\PolaClient.cs" />
     <Compile Include="View\Common\PolaBrushes.cs" />
     <Compile Include="View\Common\PolaConstants.cs" />
+    <Compile Include="View\Common\ReportPhoto.cs" />
     <Compile Include="View\Controls\CheckListItem.xaml.cs">
       <DependentUpon>CheckListItem.xaml</DependentUpon>
     </Compile>
@@ -119,10 +120,11 @@
     <Compile Include="View\Controls\ProductItem.xaml.cs">
       <DependentUpon>ProductItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Common\ReportEventArgs.cs" />
     <Compile Include="View\Pages\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Controls\ProductEventArgs.cs" />
+    <Compile Include="View\Common\ProductEventArgs.cs" />
     <Compile Include="View\Pages\Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>

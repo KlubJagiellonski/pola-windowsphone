@@ -9,8 +9,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     RequestedTheme="Light"
     IsTextScaleFactorEnabled="False">
-    
-    
+
+
 
     <Grid x:Name="LayoutRoot">
 
@@ -36,10 +36,35 @@
                        CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
-        <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <TextBlock Text="Ta funkcja zostanie wkrótce zaimplementowana. " 
-                       Style="{StaticResource ListViewEmptyStaticTextBlockStyle}"/>
-        </Grid>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="19,9.5,19,0">
+                <GridView x:Name="PhotosGridView" 
+                          SelectionMode="None" 
+                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                          Header="Zdjęcia"
+                          Margin="0, 0, -19, 0">
+                    <GridView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="83.375"
+                                  Height="83.375"
+                                  Margin="0, 0, 9.5, 9.5"
+                                  Background="Gray">
+                                <Image Stretch="UniformToFill"
+                                       Source="{Binding ThumbnailSource}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                    <GridView.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       Style="{StaticResource ControlHeaderTextBlockStyle}"
+                                       Margin="0, 0, 0, 2.5"/>
+                        </DataTemplate>
+                    </GridView.HeaderTemplate>
+                </GridView>
+                <Button Content="dodaj zdjęcie" Click="Button_Click" />
+                <TextBox TextWrapping="Wrap" Header="Opis (opcjonalny)" />
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿using Pola.Model;
+﻿using Lumia.Imaging;
+using Pola.Model;
 using Pola.Model.Json;
 using Pola.View.Common;
 using System;
@@ -16,6 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -38,6 +40,7 @@ namespace Pola.View.Controls
         #region Fields
 
         private string barcode;
+        private WriteableBitmap bitmap;
         private Product product;
         private double? targetY = null;
 
@@ -95,6 +98,17 @@ namespace Pola.View.Controls
             }
         }
 
+        /// <summary>
+        /// Gets a bitmap object that contains an image with the scanned barcode.
+        /// </summary>
+        public WriteableBitmap Bitmap
+        {
+            get
+            {
+                return bitmap;
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -103,11 +117,12 @@ namespace Pola.View.Controls
         /// Creates a new product item. Once it's created it starts downloading product info.
         /// </summary>
         /// <param name="barcode">Barcode of product.</param>
-        public ProductItem(string barcode)
+        public ProductItem(string barcode, WriteableBitmap bitmap)
         {
             this.InitializeComponent();
             this.SetupProjection();
             this.barcode = barcode;
+            this.bitmap = bitmap;
             FindProduct();
         }
 

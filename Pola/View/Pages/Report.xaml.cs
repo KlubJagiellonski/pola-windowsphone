@@ -1,12 +1,22 @@
-﻿using Pola.Common;
+﻿using Lumia.Imaging;
+using Pola.Common;
+using Pola.Model.Json;
+using Pola.View.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
+using Windows.Storage.FileProperties;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -14,6 +24,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
@@ -26,15 +37,30 @@ namespace Pola.View.Pages
     public sealed partial class Report : Page
     {
         private NavigationHelper navigationHelper;
-        private ObservableDictionary defaultViewModel = new ObservableDictionary();
+        private CoreApplicationView view = CoreApplication.GetCurrentView();
+        private ObservableCollection<ReportPhoto> photos = new ObservableCollection<ReportPhoto>();
 
         public Report()
         {
+            CoreApplication.GetCurrentView();
             this.InitializeComponent();
-
             this.navigationHelper = new NavigationHelper(this);
-            this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
-            this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+            this.view.Activated += OnViewActivated;
+            this.PhotosGridView.ItemsSource = photos;
+        }
+
+        private void OnViewActivated(CoreApplicationView sender, IActivatedEventArgs args1)
+        {
+            FileOpenPickerContinuationEventArgs args = args1 as FileOpenPickerContinuationEventArgs;
+
+            if (args != null)
+            {
+                if (args.Files.Count == 0)
+                    return;
+
+                foreach (StorageFile file in args.Files)
+                    photos.Add(new ReportPhoto(file));
+            }
         }
 
         /// <summary>
@@ -43,42 +69,6 @@ namespace Pola.View.Pages
         public NavigationHelper NavigationHelper
         {
             get { return this.navigationHelper; }
-        }
-
-        /// <summary>
-        /// Gets the view model for this <see cref="Page"/>.
-        /// This can be changed to a strongly typed view model.
-        /// </summary>
-        public ObservableDictionary DefaultViewModel
-        {
-            get { return this.defaultViewModel; }
-        }
-
-        /// <summary>
-        /// Populates the page with content passed during navigation.  Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="NavigationHelper"/>
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session.  The state will be null the first time a page is visited.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache.  Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/></param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
-        private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
-        {
         }
 
         #region NavigationHelper registration
@@ -99,6 +89,12 @@ namespace Pola.View.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            if (e.NavigationMode == NavigationMode.New && e.Parameter != null && e.Parameter is ReportEventArgs)
+            {
+                Product product = ((ReportEventArgs)e.Parameter).Product;
+                WriteableBitmap bitmap = ((ReportEventArgs)e.Parameter).Bitmap;
+                photos.Add(new ReportPhoto(bitmap));
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -107,5 +103,22 @@ namespace Pola.View.Pages
         }
 
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string ImagePath = string.Empty;
+            FileOpenPicker filePicker = new FileOpenPicker();
+
+            filePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            filePicker.ViewMode = PickerViewMode.Thumbnail;
+
+            filePicker.FileTypeFilter.Clear();
+            filePicker.FileTypeFilter.Add(".bmp");
+            filePicker.FileTypeFilter.Add(".png");
+            filePicker.FileTypeFilter.Add(".jpeg");
+            filePicker.FileTypeFilter.Add(".jpg");
+
+            filePicker.PickMultipleFilesAndContinue();
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Pola.Model.Json;
+﻿using Lumia.Imaging;
+using Pola.Model.Json;
+using Pola.View.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +14,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -52,7 +55,7 @@ namespace Pola.View.Controls
         ///  Adds a new collapsed product item to the top of products list.
         /// </summary>
         /// <param name="barcode"></param>
-        public void AddProduct(string barcode)
+        public void AddProduct(string barcode, WriteableBitmap bitmap)
         {
             if (RootGrid.Children.Count > MaxCount)
                 return;
@@ -63,7 +66,7 @@ namespace Pola.View.Controls
                 return;
             }
 
-            ProductItem productItem = new ProductItem(barcode);
+            ProductItem productItem = new ProductItem(barcode, bitmap);
             productItem.VerticalAlignment = VerticalAlignment.Bottom;
             productItem.Tapped += (sender, e) =>
                 {

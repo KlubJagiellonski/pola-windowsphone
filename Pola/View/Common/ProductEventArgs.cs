@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pola.View.Controls
+namespace Pola.View.Common
 {
     public class ProductEventArgs : EventArgs
     {
-        public Product Product { get; set; }
+        public Product Product { get; private set; }
 
         public ProductEventArgs(Product product)
         {
