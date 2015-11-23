@@ -58,8 +58,7 @@ namespace Pola.View.Pages
                 if (args.Files.Count == 0)
                     return;
 
-                foreach (StorageFile file in args.Files)
-                    photos.Add(new ReportPhoto(file));
+                photos.Add(new ReportPhoto(args.Files[0]));
             }
         }
 
@@ -95,6 +94,8 @@ namespace Pola.View.Pages
                 WriteableBitmap bitmap = ((ReportEventArgs)e.Parameter).Bitmap;
                 photos.Add(new ReportPhoto(bitmap));
             }
+
+            DataTemplate photosItemTemplate = (DataTemplate)this.Resources["PhotosItemTemplate"];
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -118,7 +119,7 @@ namespace Pola.View.Pages
             filePicker.FileTypeFilter.Add(".jpeg");
             filePicker.FileTypeFilter.Add(".jpg");
 
-            filePicker.PickMultipleFilesAndContinue();
+            filePicker.PickSingleFileAndContinue();
         }
     }
 }

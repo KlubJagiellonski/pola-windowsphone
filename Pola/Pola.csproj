@@ -108,6 +108,9 @@
     <Compile Include="View\Controls\IconLink.xaml.cs">
       <DependentUpon>IconLink.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Controls\PhotoGridViewItem.xaml.cs">
+      <DependentUpon>PhotoGridViewItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Controls\PolaProgressBar.xaml.cs">
       <DependentUpon>PolaProgressBar.xaml</DependentUpon>
     </Compile>
@@ -167,6 +170,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Controls\IconLink.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Controls\PhotoGridViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
