@@ -195,7 +195,7 @@ namespace Pola.View.Pages
             if (productItem.Product.Company != null)
                 ProductDetailsPanel.Open(productItem);
             else
-                Frame.Navigate(typeof(Report));
+                Frame.Navigate(typeof(Report), new ReportEventArgs(productItem.Product, productItem.Bitmap));
         }
 
         private void OnHideBarcodeTimerTick(object sender, object e)

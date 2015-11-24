@@ -1,5 +1,6 @@
 ﻿using Lumia.Imaging;
 using Pola.Common;
+using Pola.Model;
 using Pola.Model.Json;
 using Pola.View.Common;
 using System;
@@ -61,7 +62,7 @@ namespace Pola.View.Pages
                 StorageFile file = args.Files[0];
 
                 foreach (ReportPhoto photo in photos)
-                    if (photo.PhotoFile.Path.Equals(file.Path))
+                    if (photo.PhotoFile != null && photo.PhotoFile.Path.Equals(file.Path))
                         return;
                 photos.Add(new ReportPhoto(file));
             }
@@ -126,6 +127,16 @@ namespace Pola.View.Pages
             filePicker.FileTypeFilter.Add(".jpg");
 
             filePicker.PickSingleFileAndContinue();
+        }
+
+        private void OnCancleClick(object sender, RoutedEventArgs e)
+        {
+            Frame.GoBack();
+        }
+
+        private void OnSendClick(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

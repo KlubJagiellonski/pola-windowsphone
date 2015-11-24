@@ -63,4 +63,17 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
+    <Page.BottomAppBar>
+        <CommandBar Foreground="White"
+                    Background="{StaticResource PolaRedBrush}" >
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="SendButton" 
+                              Label="wyślij"
+                              Icon="Send" Click="OnSendClick"/>
+                <AppBarButton x:Name="CancelButton"
+                              Icon="Cancel"
+                              Label="anuluj" Click="OnCancleClick" />
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>
