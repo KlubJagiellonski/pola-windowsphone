@@ -58,7 +58,12 @@ namespace Pola.View.Pages
                 if (args.Files.Count == 0)
                     return;
 
-                photos.Add(new ReportPhoto(args.Files[0]));
+                StorageFile file = args.Files[0];
+
+                foreach (ReportPhoto photo in photos)
+                    if (photo.PhotoFile.Path.Equals(file.Path))
+                        return;
+                photos.Add(new ReportPhoto(file));
             }
         }
 
@@ -92,6 +97,7 @@ namespace Pola.View.Pages
             {
                 Product product = ((ReportEventArgs)e.Parameter).Product;
                 WriteableBitmap bitmap = ((ReportEventArgs)e.Parameter).Bitmap;
+                bitmap = bitmap.Rotate(90);
                 photos.Add(new ReportPhoto(bitmap));
             }
 

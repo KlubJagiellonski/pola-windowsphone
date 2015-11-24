@@ -22,10 +22,11 @@ namespace Pola.View.Common
 
         public ReportPhoto(StorageFile file)
         {
-            StorageItemThumbnail thumbnail = file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView).AsTask().Result;
+            StorageItemThumbnail thumbnail = file.GetScaledImageAsThumbnailAsync(ThumbnailMode.PicturesView, 128, ThumbnailOptions.ResizeThumbnail).AsTask().Result;
             BitmapImage thumbnailImage = new BitmapImage();
             var ignore = thumbnailImage.SetSourceAsync(thumbnail);
             ThumbnailSource = thumbnailImage;
+            this.PhotoFile = file;
         }
     }
 }
