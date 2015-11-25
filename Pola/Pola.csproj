@@ -94,6 +94,10 @@
     <Compile Include="Extensions\ApplicationModeExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\XamlExtensions.cs" />
+    <Compile Include="Model\JsonWebClient.cs" />
+    <Compile Include="Model\Json\Attach.cs" />
+    <Compile Include="Model\Json\AttachResponse.cs" />
+    <Compile Include="Model\Json\ReportResponse.cs" />
     <Compile Include="View\Common\ContinousAutoFocus.cs" />
     <Compile Include="Model\Json\Company.cs" />
     <Compile Include="Model\Json\Product.cs" />

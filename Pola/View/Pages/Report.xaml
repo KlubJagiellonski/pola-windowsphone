@@ -57,7 +57,8 @@
                     </GridView.HeaderTemplate>
                 </GridView>
                 <Button Content="dodaj zdjęcie" Click="Button_Click" />
-                <TextBox TextWrapping="Wrap" 
+                <TextBox x:Name="DescriptionTextBlock" 
+                         TextWrapping="Wrap" 
                          Header="Opis (opcjonalny)"
                          AcceptsReturn="True"/>
             </StackPanel>

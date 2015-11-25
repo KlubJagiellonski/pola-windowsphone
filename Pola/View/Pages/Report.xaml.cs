@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
@@ -40,6 +41,7 @@ namespace Pola.View.Pages
         private NavigationHelper navigationHelper;
         private CoreApplicationView view = CoreApplication.GetCurrentView();
         private ObservableCollection<ReportPhoto> photos = new ObservableCollection<ReportPhoto>();
+        private int productId;
 
         public Report()
         {
@@ -62,7 +64,7 @@ namespace Pola.View.Pages
                 StorageFile file = args.Files[0];
 
                 foreach (ReportPhoto photo in photos)
-                    if (photo.PhotoFile != null && photo.PhotoFile.Path.Equals(file.Path))
+                    if (file.Path.Equals(photo.FilePath))
                         return;
                 photos.Add(new ReportPhoto(file));
             }
@@ -97,12 +99,11 @@ namespace Pola.View.Pages
             if (e.NavigationMode == NavigationMode.New && e.Parameter != null && e.Parameter is ReportEventArgs)
             {
                 Product product = ((ReportEventArgs)e.Parameter).Product;
+                productId = product.Id;
                 WriteableBitmap bitmap = ((ReportEventArgs)e.Parameter).Bitmap;
                 bitmap = bitmap.Rotate(90);
                 photos.Add(new ReportPhoto(bitmap));
             }
-
-            DataTemplate photosItemTemplate = (DataTemplate)this.Resources["PhotosItemTemplate"];
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -134,9 +135,22 @@ namespace Pola.View.Pages
             Frame.GoBack();
         }
 
-        private void OnSendClick(object sender, RoutedEventArgs e)
+        private async void OnSendClick(object sender, RoutedEventArgs e)
         {
-            
+            Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, productId);
+            ReportResponse reportResponse = await PolaClient.CreateReport(report);
+            if (photos.Count > 0 && reportResponse.SignedRequests.Length > 0)
+            {
+                int count = Math.Min(photos.Count, reportResponse.SignedRequests.Length);
+                for (int i = 0; i < count; i++)
+                {
+                    ReportPhoto photo = photos[i];
+                    string uploadUri = reportResponse.SignedRequests[i][0];
+
+                    if (photo.Bitmap != null)
+                        await PolaClient.UploadImage(uploadUri, photo.Bitmap);
+                }
+            }
         }
     }
 }

@@ -1,0 +1,16 @@
+﻿
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Pola.Model.Json
+{
+    public class AttachResponse
+    {
+        [JsonProperty("signed_request")]
+        public string[] SignedRequest { get; set; }
+    }
+}
