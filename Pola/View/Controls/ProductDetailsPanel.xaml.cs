@@ -87,20 +87,7 @@ namespace Pola.View.Controls
                     PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.Company.PlNotGlobalEntity);
                 }
 
-                PlScoreBar.Value = product.PlScore ?? 0;
-                PlScoreBar.IsUnknown = product.PlScore == null;
-
-
-                if (product.Company != null)
-                {
-                    PlCapitalBar.Value = product.Company.PlCapital ?? 0;
-                    PlCapitalBar.IsUnknown = product.Company.PlCapital == null;
-                }
-                else
-                {
-                    PlCapitalBar.Value = 0;
-                    PlCapitalBar.IsUnknown = true;
-                }
+                PlScoreBar.Value = product.PlScore;
 
                 if (product.IsVerified)
                 {

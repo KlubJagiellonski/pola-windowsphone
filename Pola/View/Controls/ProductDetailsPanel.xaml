@@ -138,7 +138,6 @@
                 <controls:PolaProgressBar x:Name="PlScoreBar" 
                                           Foreground="{StaticResource PolaRedBrush}"
                                           Background="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
-                                          Value="0"
                                           Height="26.6667"/>
                 <TextBlock Text="Udział polskiego kapitału" 
                            Foreground="Black"
@@ -149,8 +148,8 @@
                                           Margin="19, 0, 19, 9.5"
                                           Background="#11000000"
                                           Foreground="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
-                                          Height="22.3333"
-                                          Value="0"/>
+                                          ForegroundTextBrush="Black"
+                                          Height="22.3333"/>
                 <controls:CheckListItem x:Name="PlWorkersCheck" 
                                        Title="Produkuje w Polsce"
                                        Margin="19, 9.5, 0, 9.5"/>
