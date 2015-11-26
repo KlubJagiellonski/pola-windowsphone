@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -19,6 +20,8 @@ using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -38,10 +41,34 @@ namespace Pola.View.Pages
     /// </summary>
     public sealed partial class Report : Page
     {
+        #region Constants
+
+        private const int PhotosCountMax = 10;
+
+        #endregion
+
+        #region Fields
+
         private NavigationHelper navigationHelper;
         private CoreApplicationView view = CoreApplication.GetCurrentView();
         private ObservableCollection<ReportPhoto> photos = new ObservableCollection<ReportPhoto>();
         private int productId;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
+        /// </summary>
+        public NavigationHelper NavigationHelper
+        {
+            get { return this.navigationHelper; }
+        }
+
+        #endregion
+
+        #region Constructor
 
         public Report()
         {
@@ -51,6 +78,10 @@ namespace Pola.View.Pages
             this.view.Activated += OnViewActivated;
             this.PhotosGridView.ItemsSource = photos;
         }
+
+        #endregion
+
+        #region Event handlers
 
         private void OnViewActivated(CoreApplicationView sender, IActivatedEventArgs args1)
         {
@@ -68,17 +99,10 @@ namespace Pola.View.Pages
                         return;
                 photos.Add(new ReportPhoto(file));
             }
-        }
 
-        /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
-        /// </summary>
-        public NavigationHelper NavigationHelper
-        {
-            get { return this.navigationHelper; }
+            this.UpdateSendButtonAvaialbility();
+            this.UpdateAddPhotoButtonAvailability();
         }
-
-        #region NavigationHelper registration
 
         /// <summary>
         /// The methods provided in this section are simply used to allow
@@ -104,6 +128,7 @@ namespace Pola.View.Pages
                 bitmap = bitmap.Rotate(90);
                 photos.Add(new ReportPhoto(bitmap));
             }
+            this.UpdateSendButtonAvaialbility();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -111,9 +136,7 @@ namespace Pola.View.Pages
             this.navigationHelper.OnNavigatedFrom(e);
         }
 
-        #endregion
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OnAddPhotoClick(object sender, RoutedEventArgs e)
         {
             string ImagePath = string.Empty;
             FileOpenPicker filePicker = new FileOpenPicker();
@@ -137,20 +160,70 @@ namespace Pola.View.Pages
 
         private async void OnSendClick(object sender, RoutedEventArgs e)
         {
-            Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, productId);
-            ReportResponse reportResponse = await PolaClient.CreateReport(report);
-            if (photos.Count > 0 && reportResponse.SignedRequests.Length > 0)
-            {
-                int count = Math.Min(photos.Count, reportResponse.SignedRequests.Length);
-                for (int i = 0; i < count; i++)
-                {
-                    ReportPhoto photo = photos[i];
-                    string uploadUri = reportResponse.SignedRequests[i][0];
+            ProgressLayer.Visibility = Visibility.Visible;
+            ProgressRing.IsActive = true;
+            ProgressMessageTextBlock.Text = "Wysyłanie raportu";
+            BottomAppBar.Visibility = Visibility.Collapsed;
 
-                    if (photo.Bitmap != null)
-                        await PolaClient.UploadImage(uploadUri, photo.Bitmap);
+            try
+            {
+                Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, productId);
+                ReportResponse reportResponse = await PolaClient.CreateReport(report);
+                if (photos.Count > 0 && reportResponse.SignedRequests.Length > 0)
+                {
+                    int count = Math.Min(photos.Count, reportResponse.SignedRequests.Length);
+                    for (int i = 0; i < count; i++)
+                    {
+                        var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            ProgressMessageTextBlock.Text = string.Format("Wysyłanie zdjęć {0} z {1}", i + 1, photos.Count);
+                        });
+                        ReportPhoto photo = photos[i];
+                        string uploadUri = reportResponse.SignedRequests[i][0];
+
+                        if (photo.Bitmap != null)
+                            await PolaClient.UploadImage(uploadUri, photo.Bitmap);
+                    }
                 }
+
+                ProgressRing.IsActive = false;
+                ProgressMessageTextBlock.Text = "Wysłano";
+
+                MessageDialog dialog = new MessageDialog("Raport został pomyślnie wysłany.", "Zgłaszanie");
+                await dialog.ShowAsync();
+                Frame.GoBack();
+            }
+            catch
+            {
+                ProgressLayer.Visibility = Visibility.Collapsed;
+                ProgressRing.IsActive = false;
+
+                MessageDialog dialog = new MessageDialog("Wystąpił błąd podczas wysyłania raportu. Spróbuj ponownie później.", "Błąd");
+                var ignore = dialog.ShowAsync();
+                BottomAppBar.Visibility = Visibility.Visible;
             }
         }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Changes "Send" button availability depending on photos count. At least one photo is required.
+        /// </summary>
+        private void UpdateSendButtonAvaialbility()
+        {
+            SendButton.IsEnabled = photos.Count > 0;
+        }
+
+        /// <summary>
+        /// Changes "Add photo" button availability depending on photos count. There is a limit of maximum photos count set to 10.
+        /// </summary>
+        private void UpdateAddPhotoButtonAvailability()
+        {
+            AddPhotoButton.IsEnabled = photos.Count < PhotosCountMax;
+        }
+
+        #endregion
     }
 }

@@ -45,7 +45,7 @@
                 <GridView x:Name="PhotosGridView" 
                           SelectionMode="None" 
                           ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                          Header="Zdjęcia"
+                          Header="Zdjęcia (od 1 do 10)"
                           Margin="0, 0, -19, 0"
                           ItemTemplate="{StaticResource PhotosItemTemplate}">
                     <GridView.HeaderTemplate>
@@ -56,13 +56,33 @@
                         </DataTemplate>
                     </GridView.HeaderTemplate>
                 </GridView>
-                <Button Content="dodaj zdjęcie" Click="Button_Click" />
+                <Button x:Name="AddPhotoButton" 
+                        Content="dodaj zdjęcie" 
+                        Click="OnAddPhotoClick" />
                 <TextBox x:Name="DescriptionTextBlock" 
                          TextWrapping="Wrap" 
                          Header="Opis (opcjonalny)"
                          AcceptsReturn="True"/>
             </StackPanel>
         </ScrollViewer>
+        <Grid x:Name="ProgressLayer" 
+              Visibility="Collapsed"
+              Background="#ccffffff"
+              Grid.RowSpan="2">
+            <StackPanel Orientation="Vertical"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center" >
+                <ProgressRing x:Name="ProgressRing" 
+                              Foreground="{StaticResource PolaRedBrush}"
+                              Background="Transparent"
+                              IsActive="False"/>
+                <TextBlock x:Name="ProgressMessageTextBlock" 
+                           Text="Wysyłanie raportu"
+                           VerticalAlignment="Center" 
+                           Margin="9.5"
+                           Style="{StaticResource MessageDialogContentStyle}"/>
+            </StackPanel>
+        </Grid>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar Foreground="White"
@@ -70,10 +90,13 @@
             <CommandBar.PrimaryCommands>
                 <AppBarButton x:Name="SendButton" 
                               Label="wyślij"
-                              Icon="Send" Click="OnSendClick"/>
+                              Icon="Send" 
+                              Click="OnSendClick"
+                              IsEnabled="False"/>
                 <AppBarButton x:Name="CancelButton"
                               Icon="Cancel"
-                              Label="anuluj" Click="OnCancleClick" />
+                              Label="anuluj" 
+                              Click="OnCancleClick" />
             </CommandBar.PrimaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
