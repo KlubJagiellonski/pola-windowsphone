@@ -37,9 +37,9 @@ namespace Pola.View.Controls
         /// <summary>
         /// Gets or sets current setting of the range control in %.
         /// </summary>
-        public int Value
+        public int? Value
         {
-            get { return (int)GetValue(ValueProperty); }
+            get { return (int?)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
 
@@ -49,37 +49,61 @@ namespace Pola.View.Controls
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             PolaProgressBar progressBar = (PolaProgressBar)d;
-            int value = (int)e.NewValue;
-            if (value > Max)
-                value = Max;
-            else if (value < Min)
-                value = Min;
+            if (e.NewValue == null)
+            {
+                progressBar.ProgressBarTextBlock.Text = string.Empty;
+            }
+            else
+            {
+                int value = (int)e.NewValue;
+                if (value > Max)
+                    value = Max;
+                else if (value < Min)
+                    value = Min;
 
-            progressBar.ProgressBarForeground.Width = progressBar.ActualWidth * value / (Max - Min);
-            progressBar.ProgressBarTextBlock.Text = string.Format("{0}%", value);
+                progressBar.ProgressBarForeground.Width = progressBar.ActualWidth * value / (Max - Min);
+                progressBar.ProgressBarTextBlock.Text = string.Format("{0}%", value);
+
+                progressBar.UpdateLayout();
+
+                if (progressBar.ProgressBarTextBlock.ActualWidth + 19 > progressBar.ActualWidth - progressBar.ProgressBarForeground.ActualWidth)
+                {
+                    progressBar.ProgressBarTextBlock.Margin = new Thickness(0, -2.5, progressBar.ActualWidth - progressBar.ProgressBarForeground.ActualWidth + 9.5, 0);
+                    progressBar.ProgressBarTextBlock.Foreground = progressBar.ForegroundTextBrush;
+                }
+                else
+                {
+                    progressBar.ProgressBarTextBlock.Margin = new Thickness(0, -2.5, 9.5, 0);
+                    progressBar.ProgressBarTextBlock.Foreground = progressBar.BackgroundTextBrush;
+                }
+            }
         }
 
         #endregion
 
-        #region IsUnknown
+        #region ForegroundTextBrush
 
-        public bool IsUnknown
+        public Brush ForegroundTextBrush
         {
-            get { return (bool)GetValue(IsUnknownProperty); }
-            set { SetValue(IsUnknownProperty, value); }
+            get { return (Brush)GetValue(ForegroundTextBrushProperty); }
+            set { SetValue(ForegroundTextBrushProperty, value); }
         }
 
-        public static readonly DependencyProperty IsUnknownProperty =
-            DependencyProperty.Register("IsUnknown", typeof(bool), typeof(PolaProgressBar), new PropertyMetadata(false, OnIsUnknownChanged));
+        public static readonly DependencyProperty ForegroundTextBrushProperty =
+            DependencyProperty.Register("ForegroundTextBrush", typeof(Brush), typeof(PolaProgressBar), new PropertyMetadata(PolaBrushes.White));
 
-        private static void OnIsUnknownChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        #endregion
+
+        #region BackgroundTextBrush
+
+        public Brush BackgroundTextBrush
         {
-            PolaProgressBar progressBar = (PolaProgressBar)d;
-            if ((bool)e.NewValue)
-                progressBar.ProgressBarTextBlock.Text = string.Empty;
-            else
-                progressBar.ProgressBarTextBlock.Text = string.Format("{0}%", progressBar.Value);
+            get { return (Brush)GetValue(BackgroundTextBrushProperty); }
+            set { SetValue(BackgroundTextBrushProperty, value); }
         }
+
+        public static readonly DependencyProperty BackgroundTextBrushProperty =
+            DependencyProperty.Register("BackgroundTextBrush", typeof(Brush), typeof(PolaProgressBar), new PropertyMetadata(PolaBrushes.Black));
 
         #endregion
 
@@ -92,7 +116,8 @@ namespace Pola.View.Controls
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ProgressBarForeground.Width = ActualWidth * Value / (Max - Min);
+            int value = Value ?? 0;
+            ProgressBarForeground.Width = ActualWidth * value / (Max - Min);
         }
     }
 }

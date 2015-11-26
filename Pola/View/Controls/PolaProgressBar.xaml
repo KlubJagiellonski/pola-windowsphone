@@ -20,7 +20,7 @@
                    Width="0" 
                    Fill="{Binding Path=Foreground, ElementName=ThisControl}"/>
         <TextBlock x:Name="ProgressBarTextBlock" 
-                   Text="0%"
+                   Text=""
                    Margin="0, -2.5, 9.5, 0"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Center"
