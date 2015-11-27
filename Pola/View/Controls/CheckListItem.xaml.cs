@@ -87,5 +87,16 @@ namespace Pola.View.Controls
         {
             this.InitializeComponent();
         }
+
+        public void Show(TimeSpan delay)
+        {
+            ShowStoryboard.BeginTime = delay;
+            ((ScaleTransform)CheckBacground.RenderTransform).ScaleX = 0;
+            ((ScaleTransform)CheckBacground.RenderTransform).ScaleY = 0;
+            ((ScaleTransform)CheckSymbol.RenderTransform).ScaleX = 0;
+            ((ScaleTransform)CheckSymbol.RenderTransform).ScaleY = 0;
+            TitleTextBlock.Opacity = 0;
+            ShowStoryboard.Begin();
+        }
     }
 }

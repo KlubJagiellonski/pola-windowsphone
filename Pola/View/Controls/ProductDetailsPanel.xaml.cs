@@ -145,13 +145,6 @@ namespace Pola.View.Controls
 
         #region Methods
 
-        public void Open()
-        {
-            FadeInSotryboard.Begin();
-            isOpen = true;
-            ContentGrid.IsHitTestVisible = isOpen;
-        }
-
         public void Open(ProductItem productItem)
         {
             GeneralTransform productItemTransform = this.TransformToVisual(productItem);
@@ -166,6 +159,11 @@ namespace Pola.View.Controls
                 this.Product = productItem.Product;
                 this.Bitmap = productItem.Bitmap;
             }
+
+            PlWorkersCheck.Show(TimeSpan.FromSeconds(0.2));
+            PlRndCheck.Show(TimeSpan.FromSeconds(0.3));
+            PlRegisteredCheck.Show(TimeSpan.FromSeconds(0.4));
+            PlNotGlobalCheck.Show(TimeSpan.FromSeconds(0.5));
         }
 
         public void Close()

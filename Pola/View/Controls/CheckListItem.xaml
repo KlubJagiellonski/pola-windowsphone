@@ -8,6 +8,57 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    <UserControl.Resources>
+        <Storyboard x:Name="ShowStoryboard">
+            <DoubleAnimation Storyboard.TargetName="CheckBacground"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                             From="0"
+                             To="1"
+                             Duration="00:00:00.4">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="CheckBacground"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                             From="0"
+                             To="1"
+                             Duration="00:00:00.4">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="CheckSymbol"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                             From="0"
+                             To="1"
+                             BeginTime="00:00:00.2"
+                             Duration="00:00:00.3">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="CheckSymbol"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                             From="0"
+                             To="1"
+                             BeginTime="00:00:00.2"
+                             Duration="00:00:00.3">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TitleTextBlock"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0"
+                             To="1"
+                             Duration="00:00:00.5">
+                <DoubleAnimation.EasingFunction>
+                    <QuarticEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
 
     <Grid Height="26">
         <Canvas x:Name="Check" 
@@ -67,6 +118,7 @@
                    FontSize="16"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Margin="36.1667, 0, 0, 0"/>
+                   Margin="36.1667, 0, 0, 0">
+        </TextBlock>
     </Grid>
 </UserControl>
