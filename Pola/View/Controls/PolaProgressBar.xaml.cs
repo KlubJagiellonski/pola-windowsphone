@@ -51,6 +51,7 @@ namespace Pola.View.Controls
             PolaProgressBar progressBar = (PolaProgressBar)d;
             if (e.NewValue == null)
             {
+                progressBar.ProgressBarForeground.Width = 0;
                 progressBar.ProgressBarTextBlock.Text = string.Empty;
             }
             else
