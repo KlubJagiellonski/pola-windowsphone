@@ -85,9 +85,10 @@ namespace Pola.View.Controls
                     PlRndCheck.CheckState = CheckStateFromNullableInt(product.Company.PlRnD);
                     PlRegisteredCheck.CheckState = CheckStateFromNullableInt(product.Company.PlRegistered);
                     PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.Company.PlNotGlobalEntity);
+                    PlCapitalBar.Value = product.Company.PlCapital;
                 }
 
-                PlScoreBar.Value = product.PlScore;
+                PlScoreBar.Value = product.IsVerified ? product.PlScore : null;
 
                 if (product.IsVerified)
                 {
