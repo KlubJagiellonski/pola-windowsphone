@@ -1,6 +1,7 @@
 ﻿using Lumia.Imaging;
 using Pola.Model.Json;
 using Pola.View.Common;
+using Pola.View.Pages;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -113,7 +114,7 @@ namespace Pola.View.Controls
         #region Events
 
         public event EventHandler<ReportEventArgs> Report;
-        protected void OnReport()
+        private void OnReport()
         {
             if (Report != null)
                 Report(this, new ReportEventArgs(product, Bitmap));

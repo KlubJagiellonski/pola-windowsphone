@@ -16,7 +16,7 @@
     <ProjectTypeGuids>{76F1466A-8B6D-4E39-A767-685A06062A39};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>arm</AppxBundlePlatforms>
-    <NuGetPackageImportStamp>2db828d6</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>b50c62c8</NuGetPackageImportStamp>
     <AppxBundle>Never</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -86,6 +86,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\BarcodeFilter.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
@@ -127,11 +128,9 @@
     <Compile Include="View\Controls\ProductItem.xaml.cs">
       <DependentUpon>ProductItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\ReportEventArgs.cs" />
     <Compile Include="View\Pages\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Common\ProductEventArgs.cs" />
     <Compile Include="View\Pages\Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
@@ -220,7 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Graphics.Canvas, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Win2D.win81.1.4.0\lib\wpa\Microsoft.Graphics.Canvas.winmd</HintPath>
+      <HintPath>packages\Win2D.win81.1.9.0\lib\wpa\Microsoft.Graphics.Canvas.winmd</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -254,11 +253,11 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\LumiaImagingSDK.2.0.184\build\wpa81\LumiaImagingSDK.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\LumiaImagingSDK.2.0.184\build\wpa81\LumiaImagingSDK.targets'))" />
-    <Error Condition="!Exists('packages\Win2D.win81.1.4.0\build\wpa\Win2D.win81.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Win2D.win81.1.4.0\build\wpa\Win2D.win81.targets'))" />
     <Error Condition="!Exists('packages\MMaitre.VideoEffects.2.3.2\build\wpa81\MMaitre.VideoEffects.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MMaitre.VideoEffects.2.3.2\build\wpa81\MMaitre.VideoEffects.targets'))" />
+    <Error Condition="!Exists('packages\Win2D.win81.1.9.0\build\wpa\Win2D.win81.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Win2D.win81.1.9.0\build\wpa\Win2D.win81.targets'))" />
   </Target>
-  <Import Project="packages\Win2D.win81.1.4.0\build\wpa\Win2D.win81.targets" Condition="Exists('packages\Win2D.win81.1.4.0\build\wpa\Win2D.win81.targets')" />
   <Import Project="packages\MMaitre.VideoEffects.2.3.2\build\wpa81\MMaitre.VideoEffects.targets" Condition="Exists('packages\MMaitre.VideoEffects.2.3.2\build\wpa81\MMaitre.VideoEffects.targets')" />
+  <Import Project="packages\Win2D.win81.1.9.0\build\wpa\Win2D.win81.targets" Condition="Exists('packages\Win2D.win81.1.9.0\build\wpa\Win2D.win81.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

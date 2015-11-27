@@ -245,4 +245,16 @@ namespace Pola.View.Pages
         #endregion
 
     }
+
+    public class ReportEventArgs : EventArgs
+    {
+        public Product Product { get; private set; }
+        public WriteableBitmap Bitmap { get; private set; }
+
+        public ReportEventArgs(Product product, WriteableBitmap bitmap)
+        {
+            this.Product = product;
+            this.Bitmap = bitmap;
+        }
+    }
 }

@@ -58,8 +58,9 @@ namespace Pola.View.Pages
         private string lastBarcode = null;
         private DispatcherTimer hideBarcodeTimer = new DispatcherTimer()
         {
-            Interval = TimeSpan.FromSeconds(1.5),
+            Interval = TimeSpan.FromSeconds(1),
         };
+        private BarcodeFilter barcodeFilter = new BarcodeFilter();
 
         private WriteableBitmap bitmapWithBarcode;
 
@@ -81,6 +82,7 @@ namespace Pola.View.Pages
             this.InitializeComponent();
             this.SetupApplicatoinBar();
             this.SetupBarcodeTimer();
+            this.SetupBarcodeFilter();
 
             this.navigationHelper = new NavigationHelper(this);
             HardwareButtons.BackPressed += OnBackPressed;
@@ -228,18 +230,42 @@ namespace Pola.View.Pages
             this.BottomAppBar.Opacity = 1;
         }
 
+        private void OnNewBarcodeDetected(object sender, BarcodeEventArgs e)
+        {
+            string barcode = e.Barcode;
+            if (lastBarcode != barcode)
+            {
+                Debug.WriteLine(barcode);
+                lastBarcode = barcode;
+
+                var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    ProductsListBox.AddProduct(barcode, bitmapWithBarcode);
+                    HintTextBlock.Visibility = Visibility.Collapsed;
+                    bitmapWithBarcode = new WriteableBitmap(bitmapWithBarcode.PixelWidth, bitmapWithBarcode.PixelHeight);
+                });
+            }
+        }
+
         #endregion
 
         #region Methods
 
-        public void SetupApplicatoinBar()
+        private void SetupApplicatoinBar()
         {
             this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
         }
 
-        public void SetupBarcodeTimer()
+        private void SetupBarcodeTimer()
         {
             hideBarcodeTimer.Tick += OnHideBarcodeTimerTick;
+        }
+
+        private void SetupBarcodeFilter()
+        {
+            barcodeFilter.MinPass = 3;
+            barcodeFilter.FailsThreshold = 2;
+            barcodeFilter.NewBarcodeDetected += OnNewBarcodeDetected;
         }
 
         /// <summary>
@@ -308,7 +334,7 @@ namespace Pola.View.Pages
                 Preview.Height = this.ActualWidth;
 
                 // Enable QR code detection
-                var definition = new LumiaAnalyzerDefinition(ColorMode.Yuv420Sp, 640, AnalyzeBitmap);
+                var definition = new LumiaAnalyzerDefinition(ColorMode.Yuv420Sp, Math.Min(format.Width, 800), AnalyzeBitmap);
                 await newMediaCapture.AddEffectAsync(MediaStreamType.VideoPreview, definition.ActivatableClassId, definition.Properties);
 
                 // Start preview
@@ -334,6 +360,8 @@ namespace Pola.View.Pages
             if (ProductDetailsPanel.IsOpen)
                 return;
 
+            // Miejsce na wycięcie piskeli
+
             Result result = barcodeReader.Decode(
                 bitmap.Buffers[0].Buffer.ToArray(),
                 (int)bitmap.Buffers[0].Pitch, // Should be width here but I haven't found a way to pass both width and stride to ZXing yet
@@ -356,22 +384,11 @@ namespace Pola.View.Pages
                     hideBarcodeTimer.Start();
                 });
 
-                if (lastBarcode != barcode)
-                {
-                    Debug.WriteLine(barcode);
-                    lastBarcode = barcode;
+                BitmapImageSource bmpImgSrc = new BitmapImageSource(bitmap);
+                WriteableBitmapRenderer renderer = new WriteableBitmapRenderer(bmpImgSrc, bitmapWithBarcode);
+                bitmapWithBarcode = renderer.RenderAsync().AsTask().Result;
 
-                    BitmapImageSource bmpImgSrc = new BitmapImageSource(bitmap);
-                    WriteableBitmapRenderer renderer = new WriteableBitmapRenderer(bmpImgSrc, bitmapWithBarcode);
-                    bitmapWithBarcode = renderer.RenderAsync().AsTask().Result;
-
-                    ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        ProductsListBox.AddProduct(barcode, bitmapWithBarcode);
-                        HintTextBlock.Visibility = Visibility.Collapsed;
-                        bitmapWithBarcode = new WriteableBitmap(bitmapWithBarcode.PixelWidth, bitmapWithBarcode.PixelHeight);
-                    });
-                }
+                barcodeFilter.Update(barcode);
             }
             else
             {

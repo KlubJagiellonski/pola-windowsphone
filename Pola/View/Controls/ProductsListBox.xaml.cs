@@ -160,4 +160,14 @@ namespace Pola.View.Controls
 
         #endregion
     }
+
+    public class ProductEventArgs : EventArgs
+    {
+        public Product Product { get; private set; }
+
+        public ProductEventArgs(Product product)
+        {
+            this.Product = product;
+        }
+    }
 }
