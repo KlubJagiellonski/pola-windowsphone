@@ -18,5 +18,7 @@ namespace Pola.Model.Json
 
         [JsonProperty("code")]
         public long Code { get; set; }
+
+        public bool IsReported { get; set; }
     }
 }

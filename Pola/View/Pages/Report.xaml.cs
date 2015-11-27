@@ -52,7 +52,7 @@ namespace Pola.View.Pages
         private NavigationHelper navigationHelper;
         private CoreApplicationView view = CoreApplication.GetCurrentView();
         private ObservableCollection<ReportPhoto> photos = new ObservableCollection<ReportPhoto>();
-        private int productId;
+        private Product product;
 
         #endregion
 
@@ -122,8 +122,7 @@ namespace Pola.View.Pages
             this.navigationHelper.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.New && e.Parameter != null && e.Parameter is ReportEventArgs)
             {
-                Product product = ((ReportEventArgs)e.Parameter).Product;
-                productId = product.Id;
+                product = ((ReportEventArgs)e.Parameter).Product;
                 WriteableBitmap bitmap = ((ReportEventArgs)e.Parameter).Bitmap;
                 bitmap = bitmap.Rotate(90);
                 photos.Add(new ReportPhoto(bitmap));
@@ -181,7 +180,7 @@ namespace Pola.View.Pages
 
             try
             {
-                Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, productId);
+                Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, product != null ? product.Id : 0);
                 ReportResponse reportResponse = await PolaClient.CreateReport(report);
                 if (photos.Count > 0 && reportResponse.SignedRequests.Length > 0)
                 {
@@ -202,6 +201,8 @@ namespace Pola.View.Pages
 
                 ProgressRing.IsActive = false;
                 ProgressMessageTextBlock.Text = string.Empty;
+                if (product != null)
+                    product.IsReported = true;
 
                 MessageDialog dialog = new MessageDialog("Twoje zgłoszenie zostało wysłane i będzie rozpatrzone przez naszą redakcję.", "Pola");
                 dialog.Commands.Add(new UICommand("ok") { Id = 0, });

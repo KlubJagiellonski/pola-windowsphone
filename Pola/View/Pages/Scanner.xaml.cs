@@ -111,6 +111,8 @@ namespace Pola.View.Pages
 
             if (ProductDetailsPanel.IsOpen)
                 ProductDetailsPanel.Close();
+
+            ProductsListBox.RemoveReportedProducts();
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
@@ -201,6 +203,11 @@ namespace Pola.View.Pages
                 Frame.Navigate(typeof(Report), new ReportEventArgs(productItem.Product, productItem.Bitmap));
         }
 
+        private void OnProductReport(object sender, ReportEventArgs e)
+        {
+            Frame.Navigate(typeof(Report), e);
+        }
+
         private void OnHideBarcodeTimerTick(object sender, object e)
         {
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -219,11 +226,6 @@ namespace Pola.View.Pages
         private void OnAppBarOpened(object sender, object e)
         {
             this.BottomAppBar.Opacity = 1;
-        }
-
-        private void OnProductReport(object sender, ReportEventArgs e)
-        {
-            Frame.Navigate(typeof(Report), e);
         }
 
         #endregion

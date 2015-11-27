@@ -85,10 +85,10 @@ namespace Pola.View.Controls
                 itemToRemove.Hidden += (sender, e) =>
                     {
                         RootGrid.Children.Remove(itemToRemove);
-                        RootGrid.Children.OrderBy((item) =>
-                            {
-                                return ((ProductItem)item).Translation.Y;
-                            });
+                        //RootGrid.Children.OrderBy((item) =>
+                        //    {
+                        //        return ((ProductItem)item).Translation.Y;
+                        //    });
                     };
                 itemToRemove.Hide();
                 foreach (ProductItem item in RootGrid.Children)
@@ -96,6 +96,27 @@ namespace Pola.View.Controls
             }
         }
 
+        /// <summary>
+        /// Removes unknown products from the list that has been reported or products without any data.
+        /// </summary>
+        public void RemoveReportedProducts()
+        {
+            for (int i = 0; i < RootGrid.Children.Count; i++)
+            {
+                ProductItem itemToRemove = (ProductItem)RootGrid.Children[i];
+                if (itemToRemove.Product == null || (!itemToRemove.Product.IsVerified && itemToRemove.Product.IsReported))
+                {
+                    RootGrid.Children.Remove(itemToRemove);
+                    for (int j = RootGrid.Children.Count - 1; j >= i && j >= 0; j--)
+                        ((ProductItem)RootGrid.Children[j]).SlideDown();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Moves product item to the top of the list with nice slide animation.
+        /// </summary>
+        /// <param name="productItem"></param>
         private void MoveProductItemToTop(ProductItem productItem)
         {
             if (!RootGrid.Children.Contains(productItem))
