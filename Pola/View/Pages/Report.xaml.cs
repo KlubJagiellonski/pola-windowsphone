@@ -153,6 +153,20 @@ namespace Pola.View.Pages
             filePicker.PickSingleFileAndContinue();
         }
 
+        private void OnPhotoItemClick(object sender, ItemClickEventArgs e)
+        {
+            MessageDialog dialog = new MessageDialog("Czy na pewno usunąć to zdjęcie z raportu?", "Usuń zdjęcie");
+            dialog.Commands.Add(new UICommand("tak", new UICommandInvokedHandler((command) =>
+                {
+                    photos.Remove(e.ClickedItem as ReportPhoto);
+                    UpdateSendButtonAvaialbility();
+                }), 0));
+            dialog.Commands.Add(new UICommand("nie", null, 1));
+            dialog.DefaultCommandIndex = 0;
+            dialog.CancelCommandIndex = 1;
+            var ignore = dialog.ShowAsync();
+        }
+
         private void OnCancleClick(object sender, RoutedEventArgs e)
         {
             Frame.GoBack();
@@ -187,9 +201,12 @@ namespace Pola.View.Pages
                 }
 
                 ProgressRing.IsActive = false;
-                ProgressMessageTextBlock.Text = "Wysłano";
+                ProgressMessageTextBlock.Text = string.Empty;
 
-                MessageDialog dialog = new MessageDialog("Raport został pomyślnie wysłany.", "Zgłaszanie");
+                MessageDialog dialog = new MessageDialog("Twoje zgłoszenie zostało wysłane i będzie rozpatrzone przez naszą redakcję.", "Pola");
+                dialog.Commands.Add(new UICommand("ok") { Id = 0, });
+                dialog.CancelCommandIndex = 0;
+                dialog.DefaultCommandIndex = 0;
                 await dialog.ShowAsync();
                 Frame.GoBack();
             }
@@ -225,5 +242,6 @@ namespace Pola.View.Pages
         }
 
         #endregion
+
     }
 }

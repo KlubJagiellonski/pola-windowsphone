@@ -108,6 +108,9 @@ namespace Pola.View.Pages
             Window.Current.VisibilityChanged += OnWindowVisibilityChanged;
 
             var ignore = InitializeCaptureAsync();
+
+            if (ProductDetailsPanel.IsOpen)
+                ProductDetailsPanel.Close();
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
