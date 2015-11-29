@@ -49,6 +49,11 @@ namespace Pola.View.Common
             get { return (Brush)App.Current.Resources["PolaBarcodeFrameStrokeBrush"]; }
         }
 
+        public static Brush BarcodeFrameStrokeFiltering
+        {
+            get { return (Brush)App.Current.Resources["PolaBarcodeFrameFilteringStrokeBrush"]; }
+        }
+
         public static Brush BarcodeFrameStrokeActive
         {
             get { return (Brush)App.Current.Resources["PolaBarcodeFrameActiveStrokeBrush"]; }

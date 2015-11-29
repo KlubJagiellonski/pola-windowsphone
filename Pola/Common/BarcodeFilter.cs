@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;   
 
 namespace Pola.Common
 {
     /// <summary>
-    /// BarcodeFilter rejects barcodes that has been detected by mistake. 
+    /// BarcodeFilter rejects barcodes that has been detected by mistake. It passess only barcodes that has been 
+    /// scanned a number of times in a row.
     /// </summary>
     public class BarcodeFilter
     {
@@ -17,6 +18,7 @@ namespace Pola.Common
         private int failsThreshold = 3;
         private List<BarcodeItem> barcodes = new List<BarcodeItem>();
         private int fails;
+        private string lastBarcode = null;
 
         #endregion
 
@@ -32,17 +34,6 @@ namespace Pola.Common
         {
             get { return failsThreshold; }
             set { failsThreshold = value; }
-        }
-
-        #endregion
-
-        #region Events
-
-        public event EventHandler<BarcodeEventArgs> NewBarcodeDetected;
-        protected void OnNewBarcodeDetected(string barcode)
-        {
-            if (NewBarcodeDetected != null)
-                NewBarcodeDetected(this, new BarcodeEventArgs(barcode));
         }
 
         #endregion
@@ -64,16 +55,17 @@ namespace Pola.Common
 
         #region Methods
 
-        public void Update(string barcode)
+        public bool Update(string barcode)
         {
             if (barcode == null && fails < failsThreshold)
             {
                 fails++;
-                return;
+                return false;
             }
 
             fails = 0;
             bool found = false;
+            bool detected = false;
 
             for (int i = barcodes.Count - 1; i >= 0; i--)
             {
@@ -83,7 +75,11 @@ namespace Pola.Common
                     found = true;
                     if (barcodes[i].Value >= minPass)
                     {
-                        OnNewBarcodeDetected(barcode);
+                        if (barcode != lastBarcode)
+                        {
+                            detected = true;
+                            lastBarcode = barcode;
+                        }
                         barcodes[i].Value = 1;
                     }
                 }
@@ -94,19 +90,10 @@ namespace Pola.Common
             }
             if (!found && barcode != null)
                 barcodes.Add(new BarcodeItem(barcode));
+
+            return detected;
         }
 
         #endregion
-    }
-
-    public class BarcodeEventArgs : EventArgs
-    {
-        public string Barcode { get; private set; }
-
-        public BarcodeEventArgs(string barcode)
-            : base()
-        {
-            this.Barcode = barcode;
-        }
     }
 }

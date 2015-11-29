@@ -54,8 +54,6 @@ namespace Pola.View.Pages
                 TryHarder = true
             }
         };
-
-        private string lastBarcode = null;
         private DispatcherTimer hideBarcodeTimer = new DispatcherTimer()
         {
             Interval = TimeSpan.FromSeconds(1),
@@ -214,9 +212,7 @@ namespace Pola.View.Pages
         {
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    BarcodeTextBlock.Opacity = 0;
-                    BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStroke;
-                    BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameThickness;
+                    HideBarcode();
                 });
         }
 
@@ -228,23 +224,6 @@ namespace Pola.View.Pages
         private void OnAppBarOpened(object sender, object e)
         {
             this.BottomAppBar.Opacity = 1;
-        }
-
-        private void OnNewBarcodeDetected(object sender, BarcodeEventArgs e)
-        {
-            string barcode = e.Barcode;
-            if (lastBarcode != barcode)
-            {
-                Debug.WriteLine(barcode);
-                lastBarcode = barcode;
-
-                var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    ProductsListBox.AddProduct(barcode, bitmapWithBarcode);
-                    HintTextBlock.Visibility = Visibility.Collapsed;
-                    bitmapWithBarcode = new WriteableBitmap(bitmapWithBarcode.PixelWidth, bitmapWithBarcode.PixelHeight);
-                });
-            }
         }
 
         #endregion
@@ -265,7 +244,6 @@ namespace Pola.View.Pages
         {
             barcodeFilter.MinPass = 3;
             barcodeFilter.FailsThreshold = 2;
-            barcodeFilter.NewBarcodeDetected += OnNewBarcodeDetected;
         }
 
         /// <summary>
@@ -360,8 +338,6 @@ namespace Pola.View.Pages
             if (ProductDetailsPanel.IsOpen)
                 return;
 
-            // Miejsce na wycięcie piskeli
-
             Result result = barcodeReader.Decode(
                 bitmap.Buffers[0].Buffer.ToArray(),
                 (int)bitmap.Buffers[0].Pitch, // Should be width here but I haven't found a way to pass both width and stride to ZXing yet
@@ -375,27 +351,66 @@ namespace Pola.View.Pages
 
                 string barcode = result.Text;
 
-                var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    BarcodeTextBlock.Text = barcode.ToEanString();
-                    BarcodeTextBlock.Opacity = 1;
-                    BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStrokeActive;
-                    BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameActiveThickness;
-                    hideBarcodeTimer.Start();
+                    ShowFilteringBarcode(barcode);
                 });
 
                 BitmapImageSource bmpImgSrc = new BitmapImageSource(bitmap);
                 WriteableBitmapRenderer renderer = new WriteableBitmapRenderer(bmpImgSrc, bitmapWithBarcode);
                 bitmapWithBarcode = renderer.RenderAsync().AsTask().Result;
 
-                barcodeFilter.Update(barcode);
+                if (barcodeFilter.Update(barcode))
+                {
+                    Debug.WriteLine(barcode);
+
+                    ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        ProductsListBox.AddProduct(barcode, bitmapWithBarcode);
+                        bitmapWithBarcode = new WriteableBitmap(bitmapWithBarcode.PixelWidth, bitmapWithBarcode.PixelHeight);
+
+                        if (HintTextBlock.Visibility == Visibility.Visible)
+                            HintTextBlock.Visibility = Visibility.Collapsed;
+
+                        ShowActiveBarcode(barcode);
+                    });
+                }
             }
             else
             {
                 if (autoFocus != null)
                     autoFocus.BarcodeFound = false;
             }
+        }
 
+        private void ShowFilteringBarcode(string barcode)
+        {
+            hideBarcodeTimer.Start();
+            string formattedBarcode = barcode.ToEanString();
+            if (BarcodeTextBlock.Text.Equals(formattedBarcode))
+                return;
+
+            BarcodeTextBlock.Text = formattedBarcode;
+            BarcodeTextBlock.Opacity = PolaConstants.BarcodeFilteringOpacity;
+            BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStrokeFiltering;
+            BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameFilteringThickness;
+        }
+
+        private void ShowActiveBarcode(string barcode)
+        {
+            hideBarcodeTimer.Start();
+            BarcodeTextBlock.Text = barcode.ToEanString();
+            BarcodeTextBlock.Opacity = PolaConstants.BarcodeActiveOpacity;
+            BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStrokeActive;
+            BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameActiveThickness;
+        }
+
+        private void HideBarcode()
+        {
+            BarcodeTextBlock.Text = string.Empty;
+            BarcodeTextBlock.Opacity = 0;
+            BarcodeFrame.Stroke = PolaBrushes.BarcodeFrameStroke;
+            BarcodeFrame.StrokeThickness = PolaConstants.BarcodeFrameThickness;
         }
 
         private static Regex eanRegex = new System.Text.RegularExpressions.Regex("^(\\d{8}|\\d{12,14})$");

@@ -173,6 +173,31 @@ namespace Pola.View.Pages
 
         private async void OnSendClick(object sender, RoutedEventArgs e)
         {
+            await SendReport();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Changes "Send" button availability depending on photos count. At least one photo is required.
+        /// </summary>
+        private void UpdateSendButtonAvaialbility()
+        {
+            SendButton.IsEnabled = photos.Count > 0;
+        }
+
+        /// <summary>
+        /// Changes "Add photo" button availability depending on photos count. There is a limit of maximum photos count set to 10.
+        /// </summary>
+        private void UpdateAddPhotoButtonAvailability()
+        {
+            AddPhotoButton.IsEnabled = photos.Count < PhotosCountMax;
+        }
+
+        private async Task SendReport()
+        {
             ProgressLayer.Visibility = Visibility.Visible;
             ProgressRing.IsActive = true;
             ProgressMessageTextBlock.Text = "Wysyłanie raportu";
@@ -182,6 +207,7 @@ namespace Pola.View.Pages
             {
                 Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, product != null ? product.Id : 0);
                 ReportResponse reportResponse = await PolaClient.CreateReport(report);
+
                 if (photos.Count > 0 && reportResponse.SignedRequests.Length > 0)
                 {
                     int count = Math.Min(photos.Count, reportResponse.SignedRequests.Length);
@@ -213,33 +239,16 @@ namespace Pola.View.Pages
             }
             catch
             {
-                ProgressLayer.Visibility = Visibility.Collapsed;
-                ProgressRing.IsActive = false;
+                if (Frame.CurrentSourcePageType == typeof(Report))
+                {
+                    ProgressLayer.Visibility = Visibility.Collapsed;
+                    ProgressRing.IsActive = false;
 
-                MessageDialog dialog = new MessageDialog("Wystąpił błąd podczas wysyłania raportu. Spróbuj ponownie później.", "Błąd");
-                var ignore = dialog.ShowAsync();
-                BottomAppBar.Visibility = Visibility.Visible;
+                    MessageDialog dialog = new MessageDialog("Wystąpił błąd podczas wysyłania raportu. Spróbuj ponownie później.", "Błąd");
+                    var ignore = dialog.ShowAsync();
+                    BottomAppBar.Visibility = Visibility.Visible;
+                }
             }
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Changes "Send" button availability depending on photos count. At least one photo is required.
-        /// </summary>
-        private void UpdateSendButtonAvaialbility()
-        {
-            SendButton.IsEnabled = photos.Count > 0;
-        }
-
-        /// <summary>
-        /// Changes "Add photo" button availability depending on photos count. There is a limit of maximum photos count set to 10.
-        /// </summary>
-        private void UpdateAddPhotoButtonAvailability()
-        {
-            AddPhotoButton.IsEnabled = photos.Count < PhotosCountMax;
         }
 
         #endregion
