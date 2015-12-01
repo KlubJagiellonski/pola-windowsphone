@@ -427,19 +427,15 @@ namespace Pola.View.Pages
         {
             var devices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
 
-            string deviceId = "";
+            if (devices.Count == 1)
+                return devices[0].Id;
 
             foreach (var device in devices)
-            {
                 if ((device.EnclosureLocation != null) &&
                     (device.EnclosureLocation.Panel == Windows.Devices.Enumeration.Panel.Back))
-                {
-                    deviceId = device.Id;
-                    break;
-                }
-            }
+                    return device.Id;
 
-            return deviceId;
+            return devices.FirstOrDefault().Id;
         }
 
         // Must be called on the UI thread
