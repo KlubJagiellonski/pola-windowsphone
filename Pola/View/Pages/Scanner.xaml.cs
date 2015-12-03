@@ -302,7 +302,8 @@ namespace Pola.View.Pages
 
                 await newMediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
 
-                newMediaCapture.VideoDeviceController.FlashControl.Enabled = false;
+                if (newMediaCapture.VideoDeviceController.FlashControl.Supported)
+                    newMediaCapture.VideoDeviceController.FlashControl.Enabled = false;
 
                 // Prepare bitmap for reports
                 bitmapWithBarcode = new WriteableBitmap((int)format.Width, (int)format.Height);
