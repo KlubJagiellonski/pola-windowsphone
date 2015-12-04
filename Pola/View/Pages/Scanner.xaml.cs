@@ -11,11 +11,9 @@ using System.Threading.Tasks;
 using VideoEffects;
 using Windows.ApplicationModel;
 using Windows.Devices.Enumeration;
-using Windows.Foundation;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Phone.UI.Input;
-using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Display;
 using Windows.UI;
@@ -274,9 +272,7 @@ namespace Pola.View.Pages
         private async Task InitializeCaptureAsync()
         {
             if (isMediaCaptureInitializing || (mediaCapture != null))
-            {
                 return;
-            }
             isMediaCaptureInitializing = true;
 
             try
@@ -302,6 +298,7 @@ namespace Pola.View.Pages
 
                 await newMediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, format);
 
+                // Disable flash control if supported
                 if (newMediaCapture.VideoDeviceController.FlashControl.Supported)
                     newMediaCapture.VideoDeviceController.FlashControl.Enabled = false;
 

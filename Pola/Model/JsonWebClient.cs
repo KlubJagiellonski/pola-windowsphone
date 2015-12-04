@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Pola.Model
 {
     /// <summary>
-    /// Provides methods to comunicate with a serer using JSON data.
+    /// Provides methods to comunicate with a server using JSON data.
     /// </summary>
     public class JsonWebClient
     {
@@ -35,11 +35,24 @@ namespace Pola.Model
             }
         }
 
+        /// <summary>
+        /// Performs web request using GET method.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         public static async Task<T> Get<T>(string uri)
         {
             return await DoRequest<T>(uri, "GET");
         }
 
+        /// <summary>
+        /// Performs web request using POST method.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="uri"></param>
+        /// <param name="requestBody"></param>
+        /// <returns></returns>
         public static async Task<T> Post<T>(string uri, object requestBody = null)
         {
             return await DoRequest<T>(uri, "POST", requestBody);

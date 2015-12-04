@@ -1,21 +1,14 @@
-﻿using Newtonsoft.Json;
-using Pola.Data;
+﻿using Pola.Data;
 using Pola.Model.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
-using Windows.System.Profile;
 using Windows.UI.Xaml.Media.Imaging;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Storage;
-using Windows.Storage.FileProperties;
 
 namespace Pola.Model
 {
@@ -33,9 +26,9 @@ namespace Pola.Model
         }
 
         /// <summary>
-        /// Returns info about product and company using barcode. The barcode should be in EAN-13 format.
+        /// Returns info about product and company using barcode. The barcode should be in EAN-13 or EAN-8 format.
         /// </summary>
-        /// <param name="barcode">EAN-13 barcode of a product.</param>
+        /// <param name="barcode">Barcode of a product.</param>
         /// <returns>Product details.</returns>
         public static async Task<Product> FindProduct(string barcode)
         {
@@ -50,24 +43,46 @@ namespace Pola.Model
             }
         }
 
+        /// <summary>
+        /// Creates a new report and returns URLs where photos can be uploaded.
+        /// </summary>
+        /// <param name="report">Report as JSON object.</param>
+        /// <returns></returns>
         public static async Task<ReportResponse> CreateReport(Report report)
         {
             string requestUri = string.Format("{0}/a/v2/create_report?device_id={1}", BaseUrl, DeviceId);
             return await Post<ReportResponse>(requestUri, report);
         }
 
+        /// <summary>
+        /// Update the descirption of an existing report. This method doesn't allow to upload photos.
+        /// </summary>
+        /// <param name="report"></param>
+        /// <param name="reportId"></param>
+        /// <returns></returns>
         public static async Task<ReportResponse> UpdateReport(Report report, int reportId)
         {
             string requestUri = string.Format("{0}/a/v2/update_report?device_id={1}&report_id={2}", BaseUrl, DeviceId, reportId);
             return await Post<ReportResponse>(requestUri, report);
         }
 
+        /// <summary>
+        /// Gets the URL where photo can be uploaded as an attachment to an existing report.
+        /// </summary>
+        /// <param name="reportId"></param>
+        /// <returns></returns>
         public static async Task<AttachResponse> AttachFile(int reportId)
         {
             string requestUri = string.Format("{0}/a/v2/attach_file?device_id={1}&report_id={2}", BaseUrl, DeviceId, reportId);
             return await Post<AttachResponse>(requestUri, Attach.Default);
         }
 
+        /// <summary>
+        /// Uploads a photo as a WriteableBitmap. This methods converts the given bitmap to a PNG file before sending it to the server.
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="bmp"></param>
+        /// <returns></returns>
         public static async Task UploadImage(string uri, WriteableBitmap bmp)
         {
             InMemoryRandomAccessStream memoryStream = new InMemoryRandomAccessStream();
@@ -82,6 +97,12 @@ namespace Pola.Model
             await UploadImage(uri, pngBuffer);
         }
 
+        /// <summary>
+        /// Uploads a photo as row data of a PNG file.
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="pngBuffer"></param>
+        /// <returns></returns>
         public static async Task UploadImage(string uri, byte[] pngBuffer)
         {
             Debug.WriteLine(uri);

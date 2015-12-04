@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="KlubJagiellonski.Pola" Publisher="CN=B407B029-B06B-47D3-BA51-AA37FC08C960" Version="0.1.4.0" />
+  <Identity Name="KlubJagiellonski.Pola" Publisher="CN=B407B029-B06B-47D3-BA51-AA37FC08C960" Version="1.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="fb9ea768-8448-42cc-ac4e-9c43ec0f54f7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Pola</DisplayName>

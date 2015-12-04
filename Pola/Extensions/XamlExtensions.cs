@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Windows.UI.Xaml
 {
     public static class XamlExtensions
     {
+        /// <summary>
+        /// Checks whether a UIElement is visible.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         public static bool IsVisible(this UIElement element)
         {
             return element.Visibility == Visibility.Visible;
         }
 
-        public static void IsVisible(this UIElement element, bool isVisible)
+        /// <summary>
+        /// Changes the visibility of a UIElement using a boolean value.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="visible"></param>
+        public static void SetVisible(this UIElement element, bool visible)
         {
-            element.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            element.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

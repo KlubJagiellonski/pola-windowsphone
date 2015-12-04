@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using Pola.Common;
+﻿using Pola.Common;
 using Pola.Model;
 using Pola.Model.Json;
 using System;
-using System.IO;
-using System.Net;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;

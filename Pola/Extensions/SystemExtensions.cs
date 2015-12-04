@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace System
 {
     public static class SystemExtensions
     {
+        /// <summary>
+        /// Returns a new string with white spaces between groups of numbers in a barcode string.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string ToEanString(this string value)
         {
             if (value.Length == 13)

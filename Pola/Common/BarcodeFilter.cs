@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;   
+﻿using System.Collections.Generic;
 
 namespace Pola.Common
 {
@@ -24,12 +20,18 @@ namespace Pola.Common
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets the minimum number of occurrences of a barcode in a row to pass the filter.
+        /// </summary>
         public int MinPass
         {
             get { return minPass; }
             set { minPass = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the maximum number of errors to ignore.
+        /// </summary>
         public int FailsThreshold
         {
             get { return failsThreshold; }
@@ -55,6 +57,11 @@ namespace Pola.Common
 
         #region Methods
 
+        /// <summary>
+        /// Checks whether to pass given barcode.
+        /// </summary>
+        /// <param name="barcode">The barcode to pass.</param>
+        /// <returns>True if the barcode is accepted by the filter.</returns>
         public bool Update(string barcode)
         {
             if (barcode == null && fails < failsThreshold)
