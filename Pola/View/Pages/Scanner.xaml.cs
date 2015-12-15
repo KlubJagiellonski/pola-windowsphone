@@ -195,10 +195,7 @@ namespace Pola.View.Pages
         private void OnProductSelected(object sender, ProductEventArgs e)
         {
             ProductItem productItem = (ProductItem)sender;
-            if (productItem.Product.Company != null)
-                ProductDetailsPanel.Open(productItem);
-            else
-                Frame.Navigate(typeof(Report), new ReportEventArgs(productItem.Product, productItem.Bitmap));
+            ProductDetailsPanel.Open(productItem);
         }
 
         private void OnProductReport(object sender, ReportEventArgs e)

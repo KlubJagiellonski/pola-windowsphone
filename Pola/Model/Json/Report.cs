@@ -8,7 +8,7 @@ namespace Pola.Model.Json
         public string Description { get; set; }
 
         [JsonProperty("product_id")]
-        public int ProductId { get; set; }
+        public long ProductId { get; set; }
 
         [JsonProperty("files_count")]
         public int FilesCount { get; set; }
@@ -16,7 +16,7 @@ namespace Pola.Model.Json
         public Report()
         { }
 
-        public Report(string description, int filesCount, int productId)
+        public Report(string description, int filesCount, long productId)
         {
             this.Description = description;
             this.FilesCount = filesCount;

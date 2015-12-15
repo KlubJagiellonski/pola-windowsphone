@@ -70,27 +70,27 @@ namespace Pola.View.Controls
             {
                 product = value;
 
-                if (product.Company != null)
-                {
-                    TitleTextBlock.Text = product.Company.Name;
-                    PlWorkersCheck.CheckState = CheckStateFromNullableInt(product.Company.PlWorkers);
-                    PlRndCheck.CheckState = CheckStateFromNullableInt(product.Company.PlRnD);
-                    PlRegisteredCheck.CheckState = CheckStateFromNullableInt(product.Company.PlRegistered);
-                    PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.Company.PlNotGlobalEntity);
-                    PlCapitalBar.Value = product.Company.PlCapital;
-                }
 
-                PlScoreBar.Value = product.IsVerified ? product.PlScore : null;
+                TitleTextBlock.Text = product.Name;
+                PlWorkersCheck.CheckState = CheckStateFromNullableInt(product.PlWorkers);
+                PlRndCheck.CheckState = CheckStateFromNullableInt(product.PlRnD);
+                PlRegisteredCheck.CheckState = CheckStateFromNullableInt(product.PlRegistered);
+                PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.PlNotGlobalEntity);
+                PlCapitalBar.Value = product.PlCapital;
 
-                if (product.IsVerified)
+
+                PlScoreBar.Value = product.PlScore;
+
+                switch (product.CardType)
                 {
-                    ContentGrid.Background = PolaBrushes.ProductVerifiedBackground;
-                    PlScoreBar.Background = PolaBrushes.ProductVerifiedProgressBarBackground;
-                }
-                else
-                {
-                    ContentGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
-                    PlScoreBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
+                    case CardType.White:
+                        ContentGrid.Background = PolaBrushes.ProductVerifiedBackground;
+                        PlScoreBar.Background = PolaBrushes.ProductVerifiedProgressBarBackground;
+                        break;
+                    case CardType.Grey:
+                        ContentGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
+                        PlScoreBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
+                        break;
                 }
             }
         }

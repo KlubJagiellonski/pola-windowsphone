@@ -189,7 +189,7 @@ namespace Pola.View.Pages
 
             try
             {
-                Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, product != null ? product.Id : 0);
+                Model.Json.Report report = new Model.Json.Report(DescriptionTextBlock.Text, photos.Count, (product != null && product.Id != null) ? (long)product.Id : 0);
                 ReportResponse reportResponse = await PolaClient.CreateReport(report);
 
                 if (photos.Count > 0 && reportResponse.SignedRequests.Length > 0)

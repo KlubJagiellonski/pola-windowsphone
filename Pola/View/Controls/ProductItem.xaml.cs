@@ -150,33 +150,22 @@ namespace Pola.View.Controls
                 if (product.PlScore != null)
                     ProgressBar.Value = (int)product.PlScore;
 
-                if (product.Company != null && product.Company.Name != null)
-                {
-                    TitleTextBlock.Text = product.Company.Name;
-                    TitleTextBlock.Opacity = 1;
-                }
-                else
-                {
-                    if (!product.IsVerified)
-                    {
-                        TitleTextBlock.Opacity = 1;
-                        TitleTextBlock.Text = "Nieznany produkt (dotknij, aby zgłosić)";
-                    }
-                    else
-                    {
-                        TitleTextBlock.Text = "Brak informacji";
-                    }
-                }
 
-                if (product.IsVerified)
+                TitleTextBlock.Text = product.Name;
+                TitleTextBlock.Opacity = 1;
+                //TitleTextBlock.Text = "Nieznany produkt (dotknij, aby zgłosić)";
+                //TitleTextBlock.Text = "Brak informacji";
+
+                switch (product.CardType)
                 {
-                    RootGrid.Background = PolaBrushes.ProductVerifiedBackground;
-                    ProgressBar.Background = PolaBrushes.ProductVerifiedProgressBarBackground;
-                }
-                else
-                {
-                    RootGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
-                    ProgressBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
+                    case CardType.White:
+                        RootGrid.Background = PolaBrushes.ProductVerifiedBackground;
+                        ProgressBar.Background = PolaBrushes.ProductVerifiedProgressBarBackground;
+                        break;
+                    case CardType.Grey:
+                        RootGrid.Background = PolaBrushes.ProductNotVerifiedBackground;
+                        ProgressBar.Background = PolaBrushes.ProductNotVerifiedProgressBarBackground;
+                        break;
                 }
             });
         }

@@ -93,7 +93,7 @@ namespace Pola.View.Controls
             for (int i = 0; i < RootGrid.Children.Count; i++)
             {
                 ProductItem itemToRemove = (ProductItem)RootGrid.Children[i];
-                if (itemToRemove.Product == null || (!itemToRemove.Product.IsVerified && itemToRemove.Product.IsReported))
+                if (itemToRemove.Product == null || (itemToRemove.Product.CardType == CardType.Grey && itemToRemove.Product.IsReported))
                 {
                     RootGrid.Children.Remove(itemToRemove);
                     for (int j = RootGrid.Children.Count - 1; j >= i && j >= 0; j--)

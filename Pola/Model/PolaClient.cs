@@ -34,7 +34,7 @@ namespace Pola.Model
         {
             try
             {
-                string requestUri = string.Format("{0}/a/get_by_code/{1}?device_id={2}", BaseUrl, barcode, DeviceId);
+                string requestUri = string.Format("{0}/a/v2/get_by_code?code={1}&device_id={2}", BaseUrl, barcode, DeviceId);
                 return await Get<Product>(requestUri);
             }
             catch
