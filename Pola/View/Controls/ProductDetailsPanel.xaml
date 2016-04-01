@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="500"
+    d:DesignHeight="640"
     d:DesignWidth="400">
     <UserControl.RenderTransform>
         <TranslateTransform/>
@@ -119,7 +119,7 @@
               Tapped="OnDismissTapped"/>
         <Grid x:Name="ContentGrid" 
               Background="White"
-              Margin="9.5"
+              Margin="9.5, 28.5"
               RenderTransformOrigin="0.5, 0.5"
               VerticalAlignment="Center">
             <Grid.RenderTransform>
@@ -128,45 +128,82 @@
                                     TranslateX="0"
                                     TranslateY="0"/>
             </Grid.RenderTransform>
-            <StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <TextBlock x:Name="TitleTextBlock"
                            Margin="9.5, 4.75, 9.5, 9.5"
                            Foreground="Black" 
                            FontFamily="Segoe WP"
                            FontSize="21"
-                           TextWrapping="Wrap"/>
+                           TextWrapping="Wrap"
+                           Grid.Row="0"/>
                 <controls:PolaProgressBar x:Name="PlScoreBar" 
                                           Foreground="{StaticResource PolaRedBrush}"
                                           Background="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
-                                          Height="26.6667"/>
-                <TextBlock Text="Udział polskiego kapitału" 
-                           Foreground="Black"
-                           FontFamily="Segoe WP"
-                           FontSize="16"
-                           Margin="19, 9.5, 0, 2.5"/>
-                <controls:PolaProgressBar x:Name="PlCapitalBar"
-                                          Margin="19, 0, 19, 9.5"
-                                          Background="#11000000"
-                                          Foreground="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
-                                          ForegroundTextBrush="Black"
-                                          Height="22.3333"/>
-                <controls:CheckListItem x:Name="PlWorkersCheck" 
+                                          Height="26.6667"
+                                          Grid.Row="1"/>
+                <ScrollViewer x:Name="ProductDescription"
+                              Grid.Row="2"
+                              Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Udział polskiego kapitału" 
+                               Foreground="Black"
+                               FontFamily="Segoe WP"
+                               FontSize="16"
+                               Margin="19, 9.5, 0, 2.5"/>
+                        <controls:PolaProgressBar x:Name="PlCapitalBar"
+                                                  Margin="19, 0, 19, 9.5"
+                                                  Background="#11000000"
+                                                  Foreground="{StaticResource PolaProductVerifiedProgressBarBackgroundBrush}"
+                                                  ForegroundTextBrush="Black"
+                                                  Height="22.3333"/>
+                        <controls:CheckListItem x:Name="PlWorkersCheck" 
                                        Title="Produkuje w Polsce"
                                        Margin="19, 9.5, 0, 9.5"/>
-                <controls:CheckListItem x:Name="PlRndCheck" 
+                        <controls:CheckListItem x:Name="PlRndCheck" 
                                        Title="Prowadzi badania i rozwój w Polsce"
                                        Margin="19, 9.5, 0, 9.5"/>
-                <controls:CheckListItem x:Name="PlRegisteredCheck" 
+                        <controls:CheckListItem x:Name="PlRegisteredCheck" 
                                        Title="Jest zarejestrowana w Polsce"
                                        Margin="19, 9.5, 0, 9.5"/>
-                <controls:CheckListItem x:Name="PlNotGlobalCheck" 
+                        <controls:CheckListItem x:Name="PlNotGlobalCheck" 
                                        Title="Nie jest częścią zagranicznego koncernu"
                                        Margin="19, 9.5, 0, 19"/>
+                        <TextBlock x:Name="DescriptionTextBlock"
+                                   Foreground="Black" 
+                                   Margin="19, 9.5, 19, 0"
+                                   MaxLines="3" 
+                                   Style="{StaticResource BodyTextBlockStyle}" 
+                                   FontFamily="Segoe WP" 
+                                   TextTrimming="CharacterEllipsis" />
+                        <ListViewItem Margin="0"
+                                      Padding="19, 3, 19, 9.5" 
+                                      Tapped="OnMoreClick">
+                            <TextBlock x:Name="ShowMoreTextBlock" 
+                                       FontSize="{StaticResource TextStyleLargeFontSize}"
+                                       Foreground="{StaticResource PolaRedBrush}"
+                                       Text="pokaż więcej"/>
+                        </ListViewItem>
+                    </StackPanel>
+                </ScrollViewer>
+                <TextBlock x:Name="AltTextBlock"
+                           Grid.Row="2"
+                           Foreground="Black" 
+                           Margin="19, 9.5, 19, 0"
+                           Style="{StaticResource BodyTextBlockStyle}" 
+                           FontFamily="Segoe WP" />
                 <Button x:Name="ReportButton" 
+                        Grid.Row="3"
                         Content="zgłoś nowe dane"
                         RequestedTheme="Light"
-                        Margin="19, 9.5" Click="OnReportClick" />
-            </StackPanel>
+                        Margin="19, 9.5" 
+                        Click="OnReportClick" />
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

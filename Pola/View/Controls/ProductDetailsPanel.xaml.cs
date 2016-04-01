@@ -15,6 +15,13 @@ namespace Pola.View.Controls
 {
     public sealed partial class ProductDetailsPanel : UserControl
     {
+        #region Constants
+
+        const int LessLines = 3;
+        const int MoreLines = 0;
+
+        #endregion
+
         #region Fields
 
         private bool isOpen;
@@ -70,16 +77,36 @@ namespace Pola.View.Controls
             {
                 product = value;
 
-
                 TitleTextBlock.Text = product.Name;
-                PlWorkersCheck.CheckState = CheckStateFromNullableInt(product.PlWorkers);
-                PlRndCheck.CheckState = CheckStateFromNullableInt(product.PlRnD);
-                PlRegisteredCheck.CheckState = CheckStateFromNullableInt(product.PlRegistered);
-                PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.PlNotGlobalEntity);
-                PlCapitalBar.Value = product.PlCapital;
+                if (product.AltText != null)
+                {
+                    AltTextBlock.Visibility = Visibility.Visible;
+                    ProductDescription.Visibility = Visibility.Collapsed;
+                    AltTextBlock.Text = product.AltText;
 
+                    PlWorkersCheck.CheckState = CheckListItemState.Unknown;
+                    PlRndCheck.CheckState = CheckListItemState.Unknown;
+                    PlRegisteredCheck.CheckState = CheckListItemState.Unknown;
+                    PlNotGlobalCheck.CheckState = CheckListItemState.Unknown;
+                    PlCapitalBar.Value = null;
+                    PlScoreBar.Value = null;
+                    DescriptionTextBlock.Text = string.Empty;
+                }
+                else
+                {
+                    AltTextBlock.Visibility = Visibility.Collapsed;
+                    ProductDescription.Visibility = Visibility.Visible;
+                    AltTextBlock.Text = string.Empty;
 
-                PlScoreBar.Value = product.PlScore;
+                    PlWorkersCheck.CheckState = CheckStateFromNullableInt(product.PlWorkers);
+                    PlRndCheck.CheckState = CheckStateFromNullableInt(product.PlRnD);
+                    PlRegisteredCheck.CheckState = CheckStateFromNullableInt(product.PlRegistered);
+                    PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.PlNotGlobalEntity);
+                    PlCapitalBar.Value = product.PlCapital;
+                    PlScoreBar.Value = product.PlScore;
+                    DescriptionTextBlock.MaxLines = LessLines;
+                    DescriptionTextBlock.Text = product.Description;
+                }
 
                 switch (product.CardType)
                 {
@@ -132,6 +159,20 @@ namespace Pola.View.Controls
         private void OnReportClick(object sender, RoutedEventArgs e)
         {
             OnReport();
+        }
+
+        private void OnMoreClick(object sender, TappedRoutedEventArgs e)
+        {
+            if (DescriptionTextBlock.MaxLines == LessLines)
+            {
+                DescriptionTextBlock.MaxLines = MoreLines;
+                ShowMoreTextBlock.Text = "pokaż mniej";
+            }
+            else
+            {
+                DescriptionTextBlock.MaxLines = LessLines;
+                ShowMoreTextBlock.Text = "pokaż więcej";
+            }
         }
 
         #endregion
