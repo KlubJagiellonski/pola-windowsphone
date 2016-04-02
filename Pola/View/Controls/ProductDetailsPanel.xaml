@@ -181,7 +181,8 @@
                                    Style="{StaticResource BodyTextBlockStyle}" 
                                    FontFamily="Segoe WP" 
                                    TextTrimming="CharacterEllipsis" />
-                        <ListViewItem Margin="0"
+                        <ListViewItem x:Name="ShowMoreLink" 
+                                      Margin="0"
                                       Padding="19, 3, 19, 9.5" 
                                       Tapped="OnMoreClick">
                             <TextBlock x:Name="ShowMoreTextBlock" 

@@ -99,7 +99,7 @@
 
                 <TextBlock Style="{StaticResource SubheaderTextBlockStyle}"
                            Text="Kontakt"
-                           Margin="0, 9.5"
+                           Margin="0, 28.5, 0, 9.5"
                            Foreground="{StaticResource PolaRedBrush}"/>
 
                 <Button Content="zgłoś błąd danych" Click="OnReportClick" />
@@ -108,7 +108,7 @@
 
                 <TextBlock Style="{StaticResource SubheaderTextBlockStyle}"
                            Text="Media społecznościowe"
-                           Margin="0, 9.5"
+                           Margin="0, 28.5, 0, 9.5"
                            Foreground="{StaticResource PolaRedBrush}"/>
 
                 <ListViewItem Tapped="OnFacebookTapped">

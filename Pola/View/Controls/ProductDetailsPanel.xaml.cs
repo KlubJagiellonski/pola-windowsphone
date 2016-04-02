@@ -20,6 +20,9 @@ namespace Pola.View.Controls
         const int LessLines = 3;
         const int MoreLines = 0;
 
+        const string ShowMoreText = "pokaż więcej";
+        const string ShowLessText = "pokaż mniej";
+
         #endregion
 
         #region Fields
@@ -104,8 +107,31 @@ namespace Pola.View.Controls
                     PlNotGlobalCheck.CheckState = CheckStateFromNullableInt(product.PlNotGlobalEntity);
                     PlCapitalBar.Value = product.PlCapital;
                     PlScoreBar.Value = product.PlScore;
-                    DescriptionTextBlock.MaxLines = LessLines;
+
+                    // Set description text
                     DescriptionTextBlock.Text = product.Description;
+
+                    // Allow to expand
+                    DescriptionTextBlock.MaxLines = MoreLines;
+                    
+                    // Update size
+                    DescriptionTextBlock.UpdateLayout();
+
+                    // Save the height
+                    double maximumHeight = DescriptionTextBlock.DesiredSize.Height;//.ActualHeight;
+
+                    // Limit the number of lines
+                    DescriptionTextBlock.MaxLines = LessLines;
+
+                    // Update size
+                    DescriptionTextBlock.UpdateLayout();
+
+                    // Seve the new hegiht
+                    double minimumHeight = DescriptionTextBlock.DesiredSize.Height;
+
+                    // Hide "show more" link if the description is not longer than 3 lines
+                    ShowMoreLink.Visibility = maximumHeight > minimumHeight ? Visibility.Visible : Visibility.Collapsed;
+                    ShowMoreTextBlock.Text = ShowMoreText;
                 }
 
                 switch (product.CardType)
@@ -166,12 +192,12 @@ namespace Pola.View.Controls
             if (DescriptionTextBlock.MaxLines == LessLines)
             {
                 DescriptionTextBlock.MaxLines = MoreLines;
-                ShowMoreTextBlock.Text = "pokaż mniej";
+                ShowMoreTextBlock.Text = ShowLessText;
             }
             else
             {
                 DescriptionTextBlock.MaxLines = LessLines;
-                ShowMoreTextBlock.Text = "pokaż więcej";
+                ShowMoreTextBlock.Text = ShowMoreText;
             }
         }
 

@@ -42,11 +42,14 @@
         <!-- Content -->
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="19,9.5,19,0">
+                <TextBlock Text="Zrób zdjęcie kodu kreskowego i etykiety z danymi producenta." 
+                           Style="{StaticResource BodyTextBlockStyle}" 
+                           FontFamily="Segoe WP"/>
                 <GridView x:Name="PhotosGridView" 
                           SelectionMode="None" 
                           ScrollViewer.VerticalScrollBarVisibility="Disabled"
                           Header="Zdjęcia (od 1 do 10)"
-                          Margin="0, 0, -19, 0"
+                          Margin="0, 9.5, -19, 0"
                           ItemTemplate="{StaticResource PhotosItemTemplate}" 
                           IsItemClickEnabled="True"
                           ItemClick="OnPhotoItemClick">
